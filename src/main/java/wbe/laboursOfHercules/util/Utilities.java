@@ -67,13 +67,13 @@ public class Utilities {
             meta.getPersistentDataContainer().remove(taskKey);
             meta.getPersistentDataContainer().remove(taskMaxKey);
             String tasks = item.getItemMeta().getPersistentDataContainer().get(tasksKey, PersistentDataType.STRING);
-            player.sendTitle(labour.getCompleteTaskTitle(), "", 10, 70, 20);
-            player.playSound(player, Sound.valueOf(labour.getCompleteTaskSound()), 10, 1);
 
             String[] tasksParts = tasks.split("\\.");
             if(tasksParts.length == 1) {
                 player.sendTitle(labour.getCompleteTitle(), "", 10, 70, 20);
-                player.playSound(player, Sound.valueOf(labour.getCompleteSound()), 10, 1);
+                if(!player.hasPermission("laboursofhercules.skip.sounds")) {
+                    player.playSound(player, Sound.valueOf(labour.getCompleteSound()), 10, 1);
+                }
                 for(String broadcast : labour.getCompleteBroadcast()) {
                     Bukkit.broadcastMessage(broadcast.replace("&", "§")
                             .replace("%player%", player.getName()));
@@ -82,6 +82,11 @@ public class Utilities {
                 player.getInventory().remove(item);
                 player.updateInventory();
                 return true;
+            }
+
+            player.sendTitle(labour.getCompleteTaskTitle(), "", 10, 70, 20);
+            if(!player.hasPermission("laboursofhercules.skip.sounds")) {
+                player.playSound(player, Sound.valueOf(labour.getCompleteTaskSound()), 10, 1);
             }
 
             StringBuilder tasksString = new StringBuilder();
