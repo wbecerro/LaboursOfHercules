@@ -56,7 +56,7 @@ public class Utilities {
         updateTaskLine(player, item, taskKey, taskMaxKey, line, tasksKey, newAmount, maxAmount, task, labour, end);
     }
 
-    public void updateTaskLine(Player player, ItemStack item, NamespacedKey taskKey, NamespacedKey taskMaxKey, int line,
+    public boolean updateTaskLine(Player player, ItemStack item, NamespacedKey taskKey, NamespacedKey taskMaxKey, int line,
                                NamespacedKey tasksKey, int amount, int max, Task task, Labour labour, boolean end) {
         ItemMeta meta = item.getItemMeta();
         List<String> lore = meta.getLore();
@@ -79,7 +79,7 @@ public class Utilities {
                 giveRewards(player, labour);
                 player.getInventory().remove(item);
                 player.updateInventory();
-                return;
+                return true;
             }
 
             StringBuilder tasksString = new StringBuilder();
@@ -107,6 +107,8 @@ public class Utilities {
         meta.setLore(lore);
 
         item.setItemMeta(meta);
+
+        return false;
     }
 
     public Labour getRandomLabour() {
@@ -125,6 +127,14 @@ public class Utilities {
         return (Labour) labours.toArray()[labours.size() - 1];
     }
 
+    public Task getFirstTask(ItemStack item, Labour labour) {
+        NamespacedKey tasksKey = new NamespacedKey(plugin, "tasks");
+        String tasks = item.getItemMeta().getPersistentDataContainer().get(tasksKey, PersistentDataType.STRING);
+        String[] tasksParts = tasks.split("\\.");
+        Task task = labour.getTasks().get(tasksParts[0]);
+        return task;
+    }
+
     private void giveRewards(Player player, Labour labour) {
         int rewardsAmount = getRandomNumber(labour.getMinRewards(), labour.getMaxRewards());
         for(int i=0;i<rewardsAmount;i++) {
@@ -133,7 +143,7 @@ public class Utilities {
         }
     }
 
-    private int findLine(String[] parts, List<String> lore) {
+    public int findLine(String[] parts, List<String> lore) {
         int size = lore.size();
         for(int i=0;i<size;i++) {
             if(lore.get(i).contains(parts[0].replace("%completed%", "")) &&

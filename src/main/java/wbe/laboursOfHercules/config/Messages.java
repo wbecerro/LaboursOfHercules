@@ -14,6 +14,7 @@ public class Messages {
     public String labourArguments;
     public String crystalArguments;
     public String typeNotFound;
+    public String crystalApplied;
     public List<String> help;
 
     public Messages(FileConfiguration config) {
@@ -25,6 +26,7 @@ public class Messages {
         labourArguments = config.getString("Messages.labourArguments").replace("&", "§");
         crystalArguments = config.getString("Messages.crystalArguments").replace("&", "§");
         typeNotFound = config.getString("Messages.typeNotFound").replace("&", "§");
+        crystalApplied = config.getString("Messages.crystalApplied").replace("&", "§");
         help = config.getStringList("Messages.help");
     }
 }

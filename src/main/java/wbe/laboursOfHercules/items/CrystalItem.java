@@ -37,8 +37,8 @@ public class CrystalItem extends ItemStack {
         }
         meta.setLore(lore);
 
-        NamespacedKey crystalKey = new NamespacedKey(plugin, crystal.getId());
-        meta.getPersistentDataContainer().set(crystalKey, PersistentDataType.BOOLEAN, true);
+        NamespacedKey baseKey = new NamespacedKey(plugin, "crystal");
+        meta.getPersistentDataContainer().set(baseKey, PersistentDataType.STRING, crystal.getId());
 
         if(crystal.isGlow()) {
             meta.addEnchant(Enchantment.INFINITY, 1, true);

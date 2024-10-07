@@ -5,6 +5,7 @@ Messages:
   labourArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules labour <Tipo> <Jugador> [Cantidad]"
   crystalArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules crystal <Tipo> <Jugador> [Cantidad]"
   typeNotFound: "&b[&cLabores&b] &eEl tipo %type% no existe."
+  crystalApplied: "&b[&cLabores&b] &eHas aplicado un %crystal%&e."
   help:
     - "&d&m-===- &b[&cLabores&b] &d&m-===-"
     - "&b/laboursofhercules &eMuestra esta página."
