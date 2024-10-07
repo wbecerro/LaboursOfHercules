@@ -1,0 +1,145 @@
+Messages:
+  noPermission: "&b[&cLabores&b] &eNo tienes permiso para hacer esto."
+  reload: "&b[&cLabores&b] &eEl plugin se ha recargado con éxito."
+  notEnoughArgs: "&b[&cLabores&b] &eNo has especificado suficientes argumentos."
+  labourArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules labour <Tipo> <Jugador> [Cantidad]"
+  crystalArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules crystal <Tipo> <Jugador> [Cantidad]"
+  typeNotFound: "&b[&cLabores&b] &eEl tipo %type% no existe."
+  help:
+    - "&d&m-===- &b[&cLabores&b] &d&m-===-"
+    - "&b/laboursofhercules &eMuestra esta página."
+    - "&b/laboursofhercules labour <Tipo> <Jugador> [Cantidad] &eDa unas labores a un jugador."
+    - "&b/laboursofhercules crystal <Tipo> <Jugador> [Cantidad] &eDa cristales a un jugador."
+    - "&b/laboursofhercules reload &eRecarga la configuración del plugin."
+    - "&b"
+    - "&eLeyenda: &b<> &eObligatorio  &b[] &eOpcional"
+    - "&d&m-===- &b[&cLabores&b] &d&m-===-"
+
+Config:
+  labourDropChance: 1
+  crystalDropChance: 1
+
+Labours:
+  common:
+    weight: 10
+    minRewards: 1
+    maxRewards: 2
+    minTasks: 3
+    maxTasks: 5
+    completition:
+      broadcast:
+        - ''
+        - '&b[&cLabores&b] &e%player% ha completado unas &a&lLabores comunes&e.'
+        - ''
+      playerSound: UI_TOAST_CHALLENGE_COMPLETE
+      title: '&a&lLabores completadas'
+    taskComplete:
+      sound: ENTITY_PLAYER_LEVELUP
+      title: '&a&lTarea completada'
+    item:
+      material: PAPER
+      name: "&f◆ &a&lLabores comunes &f◆"
+      lore:
+        - ''
+        - '&7Completa todas las tareas para conseguir una recompensa.'
+        - ''
+        - '&a&l➤ TAREAS:'
+      glow: true
+    crystal:
+      material: EMERALD
+      name: "&f◆ &a&lCristal común &f◆"
+      lore:
+        - ''
+        - '&7Arrástralo hacia unas &a&lLabores comunes'
+        - '&7para completar instantáneamente la tarea actual.'
+      glow: true
+    rewards:
+      - "give %player% diamond 2"
+      - "msg %player% test"
+      - "give %player% dirt 4"
+    tasks:
+      killTask:
+        type: KILL
+        minAmount: 5
+        maxAmount: 10
+        lore: '&a★ &7Mata %amount% pollos: %completed%'
+        entities:
+          - CHICKEN
+      craftTask:
+        type: CRAFT
+        minAmount: 3
+        maxAmount: 5
+        lore: '&a★ &7Fabrica %amount% pistones: %completed%'
+        items:
+          - PISTON
+      enchantTask:
+        type: ENCHANT
+        minAmount: 1
+        maxAmount: 3
+        lore: '&a★ &7Encanta %amount% espadas: %completed%'
+        items:
+          - WOODEN_SWORD
+          - STONE_SWORD
+          - GOLDEN_SWORD
+          - IRON_SWORD
+          - DIAMOND_SWORD
+          - NETHERITE_SWORD
+      fishTask:
+        type: FISH
+        minAmount: 7
+        maxAmount: 11
+        lore: '&a★ &7Pesca %amount% peces: %completed%'
+        items:
+          - COD
+          - TROPICAL_FISH
+          - SALMON
+          - PUFFERFISH
+      breakTask:
+        type: BREAK
+        minAmount: 75
+        maxAmount: 125
+        lore: '&a★ &7Pica %amount% piedra: %completed%'
+        blocks:
+          - STONE
+      shearTask:
+        type: SHEAR
+        minAmount: 8
+        maxAmount: 16
+        lore: '&a★ &7Esquila %amount% ovejas: %completed%'
+        entities:
+          - SHEEP
+      tameTask:
+        type: TAME
+        minAmount: 4
+        maxAmount: 8
+        lore: '&a★ &7Doma %amount% lobos: %completed%'
+        entities:
+          - WOLF
+      mmkillTask:
+        type: MMKILL
+        minAmount: 1
+        maxAmount: 2
+        lore: '&a★ &7Derrota %amount% Wbes: %completed%'
+        mobs:
+          - Wbe
+      fishRarityTask:
+        type: FISHINGRARITY
+        minAmount: 1
+        maxAmount: 2
+        lore: '&a★ &7Pesca %amount% legendarios: %completed%'
+        rarities:
+          - legendary
+      woodcuttingRarityTask:
+        type: WOODCUTTINGRARITY
+        minAmount: 1
+        maxAmount: 2
+        lore: '&a★ &7Obtén %amount% legendarios talando: %completed%'
+        rarities:
+          - legendary
+      crateTask:
+        type: CRATE
+        minAmount: 1
+        maxAmount: 2
+        lore: '&a★ &7Abre %amount% cajas esenciales: %completed%'
+        crates:
+          - ESENCIAL

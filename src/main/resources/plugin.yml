@@ -1,0 +1,11 @@
+name: LaboursOfHercules
+version: 1.0
+main: wbe.laboursOfHercules.LaboursOfHercules
+api-version: 1.21
+author: wbe
+depend: [MythicMobs, CrazyCrates, YggdrasilsBark, AcuaticLostWealth]
+commands:
+  LaboursOfHercules:
+    description: LaboursOfHercules main command
+    aliases: [laboursofhercules, loh, laboursoh, lohercules, lofh]
+    permission: laboursofhercules.command
