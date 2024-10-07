@@ -4,6 +4,7 @@ Messages:
   notEnoughArgs: "&b[&cLabores&b] &eNo has especificado suficientes argumentos."
   labourArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules labour <Tipo> <Jugador> [Cantidad]"
   crystalArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules crystal <Tipo> <Jugador> [Cantidad]"
+  randomArguments: "&b[&cLabores&b] &eEl uso es /laboursofhercules random <Objeto> <Jugador> [Cantidad]"
   typeNotFound: "&b[&cLabores&b] &eEl tipo %type% no existe."
   crystalApplied: "&b[&cLabores&b] &eHas aplicado un %crystal%&e."
   help:
@@ -11,6 +12,7 @@ Messages:
     - "&b/laboursofhercules &eMuestra esta página."
     - "&b/laboursofhercules labour <Tipo> <Jugador> [Cantidad] &eDa unas labores a un jugador."
     - "&b/laboursofhercules crystal <Tipo> <Jugador> [Cantidad] &eDa cristales a un jugador."
+    - "&b/laboursofhercules random <Objeto> <Jugador> [Cantidad] &eDa labores o cristales aleatorios a un jugador."
     - "&b/laboursofhercules reload &eRecarga la configuración del plugin."
     - "&b"
     - "&eLeyenda: &b<> &eObligatorio  &b[] &eOpcional"

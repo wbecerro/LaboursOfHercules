@@ -10,10 +10,13 @@ import wbe.laboursOfHercules.items.CrystalItem;
 import wbe.laboursOfHercules.items.LabourItem;
 import wbe.laboursOfHercules.labours.Crystal;
 import wbe.laboursOfHercules.labours.Labour;
+import wbe.laboursOfHercules.util.Utilities;
 
 public class CommandListener implements CommandExecutor {
 
     private LaboursOfHercules plugin = LaboursOfHercules.getInstance();
+
+    private Utilities utilities = new Utilities();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -86,6 +89,36 @@ public class CommandListener implements CommandExecutor {
                 CrystalItem crystalItem = new CrystalItem(crystal);
                 crystalItem.setAmount(amount);
                 player.getInventory().addItem(crystalItem);
+            } else if(args[0].equalsIgnoreCase("random")) {
+                if(!sender.hasPermission("laboursofhercules.command.random")) {
+                    sender.sendMessage(LaboursOfHercules.messages.noPermission);
+                    return false;
+                }
+
+                if(args.length < 3) {
+                    sender.sendMessage(LaboursOfHercules.messages.notEnoughArgs);
+                    sender.sendMessage(LaboursOfHercules.messages.randomArguments);
+                    return false;
+                }
+
+                String object = args[1];
+                player = Bukkit.getServer().getPlayer(args[2]);
+                int amount = 1;
+                if(args.length > 3) {
+                    amount = Integer.valueOf(args[3]);
+                }
+                Labour labour = utilities.getRandomLabour();
+                if(object.equalsIgnoreCase("crystal")) {
+                    Crystal crystal = LaboursOfHercules.config.crystals.get(labour.getId());
+                    CrystalItem crystalItem = new CrystalItem(crystal);
+                    crystalItem.setAmount(amount);
+                    player.getInventory().addItem(crystalItem);
+                } else {
+                    for(int i=0;i<amount;i++) {
+                        LabourItem labourItem = new LabourItem(labour);
+                        player.getInventory().addItem(labourItem);
+                    }
+                }
             } else if(args[0].equalsIgnoreCase("reload")) {
                 if(!sender.hasPermission("laboursofhercules.command.reload")) {
                     sender.sendMessage(LaboursOfHercules.messages.noPermission);

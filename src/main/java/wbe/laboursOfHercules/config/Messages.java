@@ -13,6 +13,7 @@ public class Messages {
     public String notEnoughArgs;
     public String labourArguments;
     public String crystalArguments;
+    public String randomArguments;
     public String typeNotFound;
     public String crystalApplied;
     public List<String> help;
@@ -25,6 +26,7 @@ public class Messages {
         notEnoughArgs = config.getString("Messages.notEnoughArgs").replace("&", "§");
         labourArguments = config.getString("Messages.labourArguments").replace("&", "§");
         crystalArguments = config.getString("Messages.crystalArguments").replace("&", "§");
+        randomArguments = config.getString("Messages.randomArguments").replace("&", "§");
         typeNotFound = config.getString("Messages.typeNotFound").replace("&", "§");
         crystalApplied = config.getString("Messages.crystalApplied").replace("&", "§");
         help = config.getStringList("Messages.help");
