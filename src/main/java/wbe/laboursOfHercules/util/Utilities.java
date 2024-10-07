@@ -7,6 +7,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
+import wbe.laboursOfHercules.events.CompleteLabourEvent;
+import wbe.laboursOfHercules.events.CompleteTaskEvent;
 import wbe.laboursOfHercules.labours.Labour;
 import wbe.laboursOfHercules.labours.tasks.Task;
 
@@ -76,7 +78,7 @@ public class Utilities {
                     Bukkit.broadcastMessage(broadcast.replace("&", "§")
                             .replace("%player%", player.getName()));
                 }
-                giveRewards(player, labour);
+                giveRewards(player, labour, item);
                 player.getInventory().remove(item);
                 player.updateInventory();
                 return true;
@@ -91,6 +93,7 @@ public class Utilities {
 
             meta.getPersistentDataContainer().set(tasksKey, PersistentDataType.STRING,
                     tasksString.toString().toString().substring(0, tasksString.toString().toString().length() - 1));
+            plugin.getServer().getPluginManager().callEvent(new CompleteTaskEvent(player, item, labour, task));
         } else {
             meta.getPersistentDataContainer().set(taskKey, PersistentDataType.INTEGER, amount);
         }
@@ -135,12 +138,15 @@ public class Utilities {
         return task;
     }
 
-    private void giveRewards(Player player, Labour labour) {
+    private void giveRewards(Player player, Labour labour, ItemStack item) {
         int rewardsAmount = getRandomNumber(labour.getMinRewards(), labour.getMaxRewards());
+        List<String> rewards = new ArrayList<>();
         for(int i=0;i<rewardsAmount;i++) {
             String reward = labour.getRandomReward().replace("%player%", player.getName());
+            rewards.add(reward);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), reward);
         }
+        plugin.getServer().getPluginManager().callEvent(new CompleteLabourEvent(player, item, labour, rewards));
     }
 
     public int findLine(String[] parts, List<String> lore) {

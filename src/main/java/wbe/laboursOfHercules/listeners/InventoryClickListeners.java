@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
+import wbe.laboursOfHercules.events.CrystalUseEvent;
 import wbe.laboursOfHercules.labours.Labour;
 import wbe.laboursOfHercules.labours.tasks.Task;
 import wbe.laboursOfHercules.util.Utilities;
@@ -81,6 +82,7 @@ public class InventoryClickListeners implements Listener {
             event.setCurrentItem(newItem);
             event.setCancelled(true);
         }
+        plugin.getServer().getPluginManager().callEvent(new CrystalUseEvent(player, newItem, cursorItem, labour));
         player.updateInventory();
     }
 }
