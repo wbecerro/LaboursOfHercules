@@ -45,6 +45,10 @@ public class CompleteTaskEvent extends Event implements Cancellable {
         return type;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;

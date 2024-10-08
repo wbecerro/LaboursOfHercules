@@ -40,6 +40,10 @@ public class CrystalUseEvent extends Event implements Cancellable {
         return crystalItem;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public Labour getType() {
         return type;
     }
