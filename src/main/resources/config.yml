@@ -22,6 +22,24 @@ Config:
   labourDropChance: 1
   crystalDropChance: 1
 
+Items:
+  randomLabour:
+    material: PAPER
+    name: "&f◆ &5&lProfecía sin revelar &f◆"
+    lore:
+      - ''
+      - '&7Haz &cCLIC DERECHO &7para revelar unas labores'
+      - '&7aleatorias decididas por los dioses.'
+    glow: true
+  randomCrystal:
+    material: EMERALD
+    name: "&f◆ &5&lCristal sin revelar &f◆"
+    lore:
+      - ''
+      - '&7Haz &cCLIC DERECHO &7para revelar un cristal'
+      - '&7aleatorio decidido por los dioses.'
+    glow: true
+
 Labours:
   common:
     weight: 10

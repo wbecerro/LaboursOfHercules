@@ -19,6 +19,22 @@ public class Config {
 
     public int crystalDropChance;
 
+    public Material randomLabourMaterial;
+
+    public String randomLabourName;
+
+    public List<String> randomLabourLore;
+
+    public boolean randomLabourGlow;
+
+    public Material randomCrystalMaterial;
+
+    public String randomCrystalName;
+
+    public List<String> randomCrystalLore;
+
+    public boolean randomCrystalGlow;
+
     public HashMap<String, Labour> labours = new HashMap<>();
 
     public int laboursTotalWeight = 0;
@@ -30,6 +46,14 @@ public class Config {
 
         labourDropChance = config.getInt("Config.labourDropChance");
         crystalDropChance = config.getInt("Config.crystalDropChance");
+        randomLabourMaterial = Material.valueOf(config.getString("Items.randomLabour.material"));
+        randomLabourName = config.getString("Items.randomLabour.name").replace("&", "§");
+        randomLabourLore = config.getStringList("Items.randomLabour.lore");
+        randomLabourGlow = config.getBoolean("Items.randomLabour.glow");
+        randomCrystalMaterial = Material.valueOf(config.getString("Items.randomCrystal.material"));
+        randomCrystalName = config.getString("Items.randomCrystal.name").replace("&", "§");
+        randomCrystalLore = config.getStringList("Items.randomCrystal.lore");
+        randomCrystalGlow = config.getBoolean("Items.randomCrystal.glow");
 
         loadLabours();
     }
@@ -132,7 +156,7 @@ public class Config {
                 rarities = config.getStringList("Labours." + labour + ".tasks." + task + ".rarities");
                 return new WoodcuttingRarityTask(id, minAmount, maxAmount, lore, rarities);
             case "CRATE":
-                List<String> crates = config.getStringList("Labours." + labour + ".tasks." + task + ".entities");
+                List<String> crates = config.getStringList("Labours." + labour + ".tasks." + task + ".crates");
                 return new CrateTask(id, minAmount, maxAmount, lore, crates);
         }
 

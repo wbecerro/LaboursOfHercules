@@ -1,6 +1,7 @@
 package wbe.laboursOfHercules.listeners;
 
 import com.badbones69.crazycrates.api.events.CrateOpenEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

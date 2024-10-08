@@ -9,9 +9,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
-import wbe.laboursOfHercules.items.CrystalItem;
-import wbe.laboursOfHercules.items.LabourItem;
-import wbe.laboursOfHercules.labours.Crystal;
+import wbe.laboursOfHercules.items.RandomCrystalItem;
+import wbe.laboursOfHercules.items.RandomLabourItem;
 import wbe.laboursOfHercules.labours.Labour;
 import wbe.laboursOfHercules.labours.tasks.KillTask;
 import wbe.laboursOfHercules.labours.tasks.Task;
@@ -76,16 +75,12 @@ public class EntityDeathListeners implements Listener {
         }
 
         Random random = new Random();
-        Labour labour = null;
         if(random.nextInt(100) < LaboursOfHercules.config.labourDropChance) {
-            labour = utilities.getRandomLabour();
-            event.getDrops().add(new LabourItem(labour));
+            event.getDrops().add(new RandomLabourItem());
         }
 
         if(random.nextInt(100) < LaboursOfHercules.config.crystalDropChance) {
-            labour = utilities.getRandomLabour();
-            Crystal crystal = LaboursOfHercules.config.crystals.get(labour.getId());
-            event.getDrops().add(new CrystalItem(crystal));
+            event.getDrops().add(new RandomCrystalItem());
         }
     }
 }

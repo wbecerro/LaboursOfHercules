@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.items.CrystalItem;
 import wbe.laboursOfHercules.items.LabourItem;
+import wbe.laboursOfHercules.items.RandomCrystalItem;
+import wbe.laboursOfHercules.items.RandomLabourItem;
 import wbe.laboursOfHercules.labours.Crystal;
 import wbe.laboursOfHercules.labours.Labour;
 import wbe.laboursOfHercules.util.Utilities;
@@ -107,16 +109,13 @@ public class CommandListener implements CommandExecutor {
                 if(args.length > 3) {
                     amount = Integer.valueOf(args[3]);
                 }
-                Labour labour = utilities.getRandomLabour();
                 if(object.equalsIgnoreCase("crystal")) {
-                    Crystal crystal = LaboursOfHercules.config.crystals.get(labour.getId());
-                    CrystalItem crystalItem = new CrystalItem(crystal);
-                    crystalItem.setAmount(amount);
-                    player.getInventory().addItem(crystalItem);
+                    RandomCrystalItem crystal = new RandomCrystalItem();
+                    player.getInventory().addItem(crystal);
                 } else {
                     for(int i=0;i<amount;i++) {
-                        LabourItem labourItem = new LabourItem(labour);
-                        player.getInventory().addItem(labourItem);
+                        RandomLabourItem labour = new RandomLabourItem();
+                        player.getInventory().addItem(labour);
                     }
                 }
             } else if(args[0].equalsIgnoreCase("reload")) {

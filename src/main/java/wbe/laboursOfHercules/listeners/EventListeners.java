@@ -21,5 +21,6 @@ public class EventListeners {
         pluginManager.registerEvents(new PlayerReceiveRewardListeners(), plugin);
         pluginManager.registerEvents(new PlayerShearEntityListeners(), plugin);
         pluginManager.registerEvents(new InventoryClickListeners(), plugin);
+        pluginManager.registerEvents(new PlayerInteractListeners(), plugin);
     }
 }
