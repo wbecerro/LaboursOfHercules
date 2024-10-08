@@ -75,9 +75,15 @@ Labours:
         - '&7para completar instantáneamente la tarea actual.'
       glow: true
     rewards:
-      - "give %player% diamond 2"
-      - "msg %player% test"
-      - "give %player% dirt 4"
+      diamonds:
+        weight: 10
+        command: "give %player% diamond 2"
+      message:
+        weight: 10
+        command: "msg %player% test"
+      dirt:
+        weight: 10
+        command: "give %player% dirt 4"
     tasks:
       killTask:
         type: KILL

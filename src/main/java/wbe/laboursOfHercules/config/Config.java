@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import wbe.laboursOfHercules.labours.Crystal;
 import wbe.laboursOfHercules.labours.Labour;
+import wbe.laboursOfHercules.labours.Reward;
 import wbe.laboursOfHercules.labours.tasks.*;
 
 import java.util.*;
@@ -94,10 +95,22 @@ public class Config {
         String name = config.getString("Labours." + labour + ".item.name").replace("&", "§");
         List<String> lore = config.getStringList("Labours." + labour + ".item.lore");
         boolean glow = config.getBoolean("Labours." + labour + ".item.glow");
-        List<String> rewards = config.getStringList("Labours." + labour + ".rewards");
+        List<Reward> rewards = loadRewards(labour);
         HashMap<String, Task> tasks = loadTasks(labour);
         return new Labour(id, weight, minRewards, maxRewards, minTasks, maxTasks, completeBroadcast, completeTitle,
                 completeSound, completeTaskTitle, completeTaskSound, material, name, lore, glow, rewards, tasks);
+    }
+
+    private List<Reward> loadRewards(String labour) {
+        List<Reward> rewards = new ArrayList<>();
+        Set<String> configRewards = config.getConfigurationSection("Labours." + labour + ".rewards").getKeys(false);
+        for(String reward : configRewards) {
+            int weight = config.getInt("Labours." + labour + ".rewards." + reward + ".weight");
+            String command = config.getString("Labours." + labour + ".rewards." + reward + ".command");
+            rewards.add(new Reward(weight, command));
+        }
+
+        return rewards;
     }
 
     private HashMap<String, Task> loadTasks(String labour) {

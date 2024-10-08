@@ -1,6 +1,8 @@
 package wbe.laboursOfHercules.labours;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.labours.tasks.Task;
 
 import java.util.*;
@@ -38,15 +40,15 @@ public class Labour {
 
     private boolean glow;
 
-    private List<String> rewards;
+    private List<Reward> rewards;
 
     private HashMap<String, Task> tasks;
 
-    private int rewardsSize = 0;
+    private int totalRewardsWeight = 0;
 
     public Labour(String id, int weight, int minRewards, int maxRewards, int minTasks, int maxTasks, List<String> completeBroadcast,
                   String completeTitle, String completeSound, String completeTaskTitle, String completeTaskSound, Material material,
-                  String name, List<String> lore, boolean glow, List<String> rewards, HashMap<String, Task> tasks) {
+                  String name, List<String> lore, boolean glow, List<Reward> rewards, HashMap<String, Task> tasks) {
         this.id = id;
         this.weight = weight;
         this.minRewards = minRewards;
@@ -64,7 +66,7 @@ public class Labour {
         this.glow = glow;
         this.tasks = tasks;
         this.rewards = rewards;
-        rewardsSize = rewards.size();
+        calculateTotalWeight();
     }
 
     public String getId() {
@@ -187,13 +189,13 @@ public class Labour {
         this.glow = glow;
     }
 
-    public List<String> getRewards() {
+    public List<Reward> getRewards() {
         return rewards;
     }
 
-    public void setRewards(List<String> rewards) {
+    public void setRewards(List<Reward> rewards) {
         this.rewards = rewards;
-        this.rewardsSize = rewards.size();
+        calculateTotalWeight();
     }
 
     public HashMap<String, Task> getTasks() {
@@ -205,14 +207,30 @@ public class Labour {
     }
 
     public Task getRandomTask() {
-        Random random = new Random();
         Object[] keys = tasks.keySet().toArray();
         String key = (String) keys[ThreadLocalRandom.current().nextInt(keys.length)];
         return tasks.get(key);
     }
 
-    public String getRandomReward() {
+    private void calculateTotalWeight() {
+        totalRewardsWeight = 0;
+        for(Reward reward : rewards) {
+            totalRewardsWeight += reward.getWeight();
+        }
+    }
+
+    public Reward getRandomReward() {
         Random random = new Random();
-        return rewards.get(random.nextInt(rewardsSize));
+        int randomNumber = random.nextInt(totalRewardsWeight);
+        int weight = 0;
+
+        for(Reward reward : rewards) {
+            weight += reward.getWeight();
+            if(randomNumber < weight) {
+                return reward;
+            }
+        }
+
+        return rewards.get(rewards.size() - 1);
     }
 }

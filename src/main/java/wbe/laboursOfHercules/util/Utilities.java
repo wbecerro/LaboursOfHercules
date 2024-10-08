@@ -147,7 +147,7 @@ public class Utilities {
         int rewardsAmount = getRandomNumber(labour.getMinRewards(), labour.getMaxRewards());
         List<String> rewards = new ArrayList<>();
         for(int i=0;i<rewardsAmount;i++) {
-            String reward = labour.getRandomReward().replace("%player%", player.getName());
+            String reward = labour.getRandomReward().getCommand().replace("%player%", player.getName());
             rewards.add(reward);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), reward);
         }
