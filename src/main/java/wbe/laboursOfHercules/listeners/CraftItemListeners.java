@@ -1,5 +1,6 @@
 package wbe.laboursOfHercules.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -58,7 +59,8 @@ public class CraftItemListeners implements Listener {
                         continue;
                     }
 
-                    utilities.updateProgress(labour, player, item, task);
+                    int amount = utilities.getCraftedAmount(event);
+                    utilities.updateProgress(labour, player, item, task, amount);
                 }
             }
         }
