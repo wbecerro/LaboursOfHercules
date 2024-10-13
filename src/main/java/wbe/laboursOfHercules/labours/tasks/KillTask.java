@@ -8,8 +8,8 @@ public class KillTask extends Task {
 
     private List<EntityType> entities;
 
-    public KillTask(String id, int min, int max, String lore, List<EntityType> entities) {
-        super(id, min, max, lore);
+    public KillTask(String id, int min, int max, String name, String lore, List<EntityType> entities) {
+        super(id, min, max, name, lore);
         this.entities = entities;
     }
 

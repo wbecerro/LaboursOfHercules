@@ -6,8 +6,8 @@ public class FishRarityTask extends Task {
 
     private List<String> rarities;
 
-    public FishRarityTask(String id, int min, int max, String lore, List<String> rarities) {
-        super(id, min, max, lore);
+    public FishRarityTask(String id, int min, int max, String name, String lore, List<String> rarities) {
+        super(id, min, max, name, lore);
         this.rarities = rarities;
     }
 

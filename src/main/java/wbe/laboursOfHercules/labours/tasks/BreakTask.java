@@ -8,8 +8,8 @@ public class BreakTask extends Task {
 
     private List<Material> blocks;
 
-    public BreakTask(String id, int min, int max, String lore, List<Material> blocks) {
-        super(id, min, max, lore);
+    public BreakTask(String id, int min, int max, String name, String lore, List<Material> blocks) {
+        super(id, min, max, name, lore);
         this.blocks = blocks;
     }
 

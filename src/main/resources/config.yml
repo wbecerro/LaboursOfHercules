@@ -89,6 +89,7 @@ Labours:
         type: KILL
         minAmount: 5
         maxAmount: 10
+        name: "Kill Task"
         lore: '&a★ &7Mata %amount% pollos: %completed%'
         entities:
           - CHICKEN
@@ -96,6 +97,7 @@ Labours:
         type: CRAFT
         minAmount: 3
         maxAmount: 5
+        name: "Craft Task"
         lore: '&a★ &7Fabrica %amount% pistones: %completed%'
         items:
           - PISTON
@@ -103,6 +105,7 @@ Labours:
         type: ENCHANT
         minAmount: 1
         maxAmount: 3
+        name: "Enchant Task"
         lore: '&a★ &7Encanta %amount% espadas: %completed%'
         items:
           - WOODEN_SWORD
@@ -115,6 +118,7 @@ Labours:
         type: FISH
         minAmount: 7
         maxAmount: 11
+        name: "Fish Task"
         lore: '&a★ &7Pesca %amount% peces: %completed%'
         items:
           - COD
@@ -125,6 +129,7 @@ Labours:
         type: BREAK
         minAmount: 75
         maxAmount: 125
+        name: "Break Task"
         lore: '&a★ &7Pica %amount% piedra: %completed%'
         blocks:
           - STONE
@@ -132,6 +137,7 @@ Labours:
         type: SHEAR
         minAmount: 8
         maxAmount: 16
+        name: "Shear Task"
         lore: '&a★ &7Esquila %amount% ovejas: %completed%'
         entities:
           - SHEEP
@@ -139,6 +145,7 @@ Labours:
         type: TAME
         minAmount: 4
         maxAmount: 8
+        name: "Tame Task"
         lore: '&a★ &7Doma %amount% lobos: %completed%'
         entities:
           - WOLF
@@ -146,6 +153,7 @@ Labours:
         type: MMKILL
         minAmount: 1
         maxAmount: 2
+        name: "MMKill Task"
         lore: '&a★ &7Derrota %amount% Wbes: %completed%'
         mobs:
           - Wbe
@@ -153,6 +161,7 @@ Labours:
         type: FISHINGRARITY
         minAmount: 1
         maxAmount: 2
+        name: "Fish rarity Task"
         lore: '&a★ &7Pesca %amount% legendarios: %completed%'
         rarities:
           - legendary
@@ -160,6 +169,7 @@ Labours:
         type: WOODCUTTINGRARITY
         minAmount: 1
         maxAmount: 2
+        name: "Woodcutting rarity Task"
         lore: '&a★ &7Obtén %amount% legendarios talando: %completed%'
         rarities:
           - legendary
@@ -167,6 +177,7 @@ Labours:
         type: CRATE
         minAmount: 1
         maxAmount: 2
+        name: "Crate Task"
         lore: '&a★ &7Abre %amount% cajas esenciales: %completed%'
         crates:
           - ESENCIAL

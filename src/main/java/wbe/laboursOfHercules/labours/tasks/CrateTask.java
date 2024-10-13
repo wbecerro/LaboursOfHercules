@@ -6,8 +6,8 @@ public class CrateTask extends Task {
 
     private List<String> crates;
 
-    public CrateTask(String id, int min, int max, String lore, List<String> crates) {
-        super(id, min, max, lore);
+    public CrateTask(String id, int min, int max, String name, String lore, List<String> crates) {
+        super(id, min, max, name, lore);
         this.crates = crates;
     }
 

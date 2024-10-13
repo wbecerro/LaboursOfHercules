@@ -8,8 +8,8 @@ public class CraftTask extends Task {
 
     private List<Material> items;
 
-    public CraftTask(String id, int min, int max, String lore, List<Material> items) {
-        super(id, min, max, lore);
+    public CraftTask(String id, int min, int max, String name, String lore, List<Material> items) {
+        super(id, min, max, name, lore);
         this.items = items;
     }
 

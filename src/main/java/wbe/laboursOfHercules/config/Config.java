@@ -127,6 +127,7 @@ public class Config {
         String id = task;
         int minAmount = config.getInt("Labours." + labour + ".tasks." + task + ".minAmount");
         int maxAmount = config.getInt("Labours." + labour + ".tasks." + task + ".maxAmount");
+        String name = config.getString("Labours." + labour + ".tasks." + task + ".name").replace("&", "§");
         String lore = config.getString("Labours." + labour + ".tasks." + task + ".lore").replace("&", "§");
         String type = config.getString("Labours." + labour + ".tasks." + task + ".type").toUpperCase();
 
@@ -134,46 +135,46 @@ public class Config {
             case "KILL":
                 List<String> entitiesStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".entities");
                 List<EntityType> entities = convertList(entitiesStrings, entity -> EntityType.valueOf(entity.toUpperCase()));
-                return new KillTask(id, minAmount, maxAmount, lore, entities);
+                return new KillTask(id, minAmount, maxAmount, name, lore, entities);
             case "CRAFT":
                 List<String> itemsStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".items");
                 List<Material> items = convertList(itemsStrings, item -> Material.valueOf(item.toUpperCase()));
-                return new CraftTask(id, minAmount, maxAmount, lore, items);
+                return new CraftTask(id, minAmount, maxAmount, name, lore, items);
             case "ENCHANT":
                 itemsStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".items");
                 items = convertList(itemsStrings, item -> Material.valueOf(item.toUpperCase()));
-                return new EnchantTask(id, minAmount, maxAmount, lore, items);
+                return new EnchantTask(id, minAmount, maxAmount, name, lore, items);
             case "FISH":
                 itemsStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".items");
                 items = convertList(itemsStrings, item -> Material.valueOf(item.toUpperCase()));
-                return new FishTask(id, minAmount, maxAmount, lore, items);
+                return new FishTask(id, minAmount, maxAmount, name, lore, items);
             case "BREAK":
                 List<String> blocksStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".blocks");
                 List<Material> blocks = convertList(blocksStrings, block -> Material.valueOf(block.toUpperCase()));
-                return new BreakTask(id, minAmount, maxAmount, lore, blocks);
+                return new BreakTask(id, minAmount, maxAmount, name, lore, blocks);
             case "SHEAR":
                 entitiesStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".entities");
                 entities = convertList(entitiesStrings, entity -> EntityType.valueOf(entity.toUpperCase()));
-                return new ShearTask(id, minAmount, maxAmount, lore, entities);
+                return new ShearTask(id, minAmount, maxAmount, name, lore, entities);
             case "TAME":
                 entitiesStrings = config.getStringList("Labours." + labour + ".tasks." + task + ".entities");
                 entities = convertList(entitiesStrings, entity -> EntityType.valueOf(entity.toUpperCase()));
-                return new TameTask(id, minAmount, maxAmount, lore, entities);
+                return new TameTask(id, minAmount, maxAmount, name, lore, entities);
             case "MMKILL":
                 List<String> mobs = config.getStringList("Labours." + labour + ".tasks." + task + ".mobs");
-                return new MMKillTask(id, minAmount, maxAmount, lore, mobs);
+                return new MMKillTask(id, minAmount, maxAmount, name, lore, mobs);
             case "FISHINGRARITY":
                 List<String> rarities = config.getStringList("Labours." + labour + ".tasks." + task + ".rarities");
-                return new FishRarityTask(id, minAmount, maxAmount, lore, rarities);
+                return new FishRarityTask(id, minAmount, maxAmount, name, lore, rarities);
             case "WOODCUTTINGRARITY":
                 rarities = config.getStringList("Labours." + labour + ".tasks." + task + ".rarities");
-                return new WoodcuttingRarityTask(id, minAmount, maxAmount, lore, rarities);
+                return new WoodcuttingRarityTask(id, minAmount, maxAmount, name, lore, rarities);
             case "CRATE":
                 List<String> crates = config.getStringList("Labours." + labour + ".tasks." + task + ".crates");
-                return new CrateTask(id, minAmount, maxAmount, lore, crates);
+                return new CrateTask(id, minAmount, maxAmount, name, lore, crates);
         }
 
-        return new BreakTask("error", 1, 1, "ERROR", new ArrayList<>(Arrays.asList(Material.STONE)));
+        return new BreakTask("error", 1, 1, "ERROR", "ERROR", new ArrayList<>(Arrays.asList(Material.STONE)));
     }
 
     private <T, U> List<U> convertList(List<T> list, Function<T, U> function) {

@@ -69,6 +69,10 @@ public class EntityDeathListeners implements Listener {
             return;
         }
 
+        if(entity.getType().equals(EntityType.ENDERMAN)) {
+            return;
+        }
+
         LivingEntity killer = event.getEntity().getKiller();
         if(killer == null) {
             return;

@@ -6,8 +6,8 @@ public class MMKillTask extends Task {
 
     private List<String> mobs;
 
-    public MMKillTask(String id, int min, int max, String lore, List<String> mobs) {
-        super(id, min, max, lore);
+    public MMKillTask(String id, int min, int max, String name, String lore, List<String> mobs) {
+        super(id, min, max, name, lore);
         this.mobs = mobs;
     }
 

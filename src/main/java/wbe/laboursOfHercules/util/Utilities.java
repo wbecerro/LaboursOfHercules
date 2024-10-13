@@ -106,7 +106,7 @@ public class Utilities {
                 return true;
             }
 
-            player.sendTitle(labour.getCompleteTaskTitle(), "", 10, 70, 20);
+            player.sendTitle(labour.getCompleteTaskTitle(), task.getName(), 10, 70, 20);
             if(!player.hasPermission("laboursofhercules.skip.sounds")) {
                 player.playSound(player, Sound.valueOf(labour.getCompleteTaskSound()), 10, 1);
             }

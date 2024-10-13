@@ -10,14 +10,17 @@ public class Task {
 
     private int max;
 
+    private String name;
+
     private String lore;
 
     private Utilities utilities = new Utilities();
 
-    public Task(String id, int min, int max, String lore) {
+    public Task(String id, int min, int max, String name, String lore) {
         this.id = id;
         this.min = min;
         this.max = max;
+        this.name = name;
         this.lore = lore;
     }
 
@@ -43,6 +46,14 @@ public class Task {
 
     public void setMax(int max) {
         this.max = max;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLore() {
