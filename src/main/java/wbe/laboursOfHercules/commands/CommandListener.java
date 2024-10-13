@@ -62,7 +62,11 @@ public class CommandListener implements CommandExecutor {
                 }
                 for(int i=0;i<amount;i++) {
                     LabourItem labourItem = new LabourItem(labour);
-                    player.getInventory().addItem(labourItem);
+                    if(player.getInventory().firstEmpty() == -1) {
+                        player.getWorld().dropItem(player.getLocation(), labourItem);
+                    } else {
+                        player.getInventory().addItem(labourItem);
+                    }
                 }
             } else if(args[0].equalsIgnoreCase("crystal")) {
                 if(!sender.hasPermission("laboursofhercules.command.crystal")) {
@@ -90,7 +94,11 @@ public class CommandListener implements CommandExecutor {
                 Crystal crystal = LaboursOfHercules.config.crystals.get(labour.getId());
                 CrystalItem crystalItem = new CrystalItem(crystal);
                 crystalItem.setAmount(amount);
-                player.getInventory().addItem(crystalItem);
+                if(player.getInventory().firstEmpty() == -1) {
+                    player.getWorld().dropItem(player.getLocation(), crystalItem);
+                } else {
+                    player.getInventory().addItem(crystalItem);
+                }
             } else if(args[0].equalsIgnoreCase("random")) {
                 if(!sender.hasPermission("laboursofhercules.command.random")) {
                     sender.sendMessage(LaboursOfHercules.messages.noPermission);
@@ -111,11 +119,19 @@ public class CommandListener implements CommandExecutor {
                 }
                 if(object.equalsIgnoreCase("crystal")) {
                     RandomCrystalItem crystal = new RandomCrystalItem();
-                    player.getInventory().addItem(crystal);
+                    if(player.getInventory().firstEmpty() == -1) {
+                        player.getWorld().dropItem(player.getLocation(), crystal);
+                    } else {
+                        player.getInventory().addItem(crystal);
+                    }
                 } else {
                     for(int i=0;i<amount;i++) {
                         RandomLabourItem labour = new RandomLabourItem();
-                        player.getInventory().addItem(labour);
+                        if(player.getInventory().firstEmpty() == -1) {
+                            player.getWorld().dropItem(player.getLocation(), labour);
+                        } else {
+                            player.getInventory().addItem(labour);
+                        }
                     }
                 }
             } else if(args[0].equalsIgnoreCase("reload")) {
