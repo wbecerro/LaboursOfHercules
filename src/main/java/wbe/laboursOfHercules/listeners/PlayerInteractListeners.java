@@ -47,12 +47,20 @@ public class PlayerInteractListeners implements Listener {
         Labour labour = utilities.getRandomLabour();
         if(meta.getPersistentDataContainer().has(labourKey)) {
             item.setAmount(item.getAmount() - 1);
-            event.getPlayer().getInventory().addItem(new LabourItem(labour));
+            if(event.getPlayer().getInventory().firstEmpty() == -1) {
+                event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), new LabourItem(labour));
+            } else {
+                event.getPlayer().getInventory().addItem(new LabourItem(labour));
+            }
             event.setCancelled(true);
         } else if(meta.getPersistentDataContainer().has(crystalKey)) {
             item.setAmount(item.getAmount() - 1);
             Crystal crystal = LaboursOfHercules.config.crystals.get(labour.getId());
-            event.getPlayer().getInventory().addItem(new CrystalItem(crystal));
+            if(event.getPlayer().getInventory().firstEmpty() == -1) {
+                event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), new CrystalItem(crystal));
+            } else {
+                event.getPlayer().getInventory().addItem(new CrystalItem(crystal));
+            }
             event.setCancelled(true);
         }
     }

@@ -101,7 +101,7 @@ public class Utilities {
                             .replace("%player%", player.getName()));
                 }
                 giveRewards(player, labour, item);
-                player.getInventory().remove(item);
+                player.getInventory().removeItem(item);
                 player.updateInventory();
                 return true;
             }
