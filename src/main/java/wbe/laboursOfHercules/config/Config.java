@@ -20,6 +20,8 @@ public class Config {
 
     public int crystalDropChance;
 
+    public double lootingExtraChance;
+
     public Material randomLabourMaterial;
 
     public String randomLabourName;
@@ -47,6 +49,7 @@ public class Config {
 
         labourDropChance = config.getInt("Config.labourDropChance");
         crystalDropChance = config.getInt("Config.crystalDropChance");
+        lootingExtraChance = config.getDouble("Config.lootingExtraChance");
         randomLabourMaterial = Material.valueOf(config.getString("Items.randomLabour.material"));
         randomLabourName = config.getString("Items.randomLabour.name").replace("&", "§");
         randomLabourLore = config.getStringList("Items.randomLabour.lore");

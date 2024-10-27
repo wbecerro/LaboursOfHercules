@@ -1,6 +1,8 @@
 package wbe.laboursOfHercules.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -63,7 +65,7 @@ public class EntityDeathListeners implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void addLaboursOnDeath(EntityDeathEvent event) {
+    public void addSpecialDropsOnDeath(EntityDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if(!(entity instanceof Monster)) {
             return;
@@ -78,12 +80,21 @@ public class EntityDeathListeners implements Listener {
             return;
         }
 
+        ItemStack weapon = killer.getEquipment().getItemInMainHand();
+        int lootingLevel = 0;
+        if(!weapon.getType().equals(Material.AIR)) {
+            lootingLevel = weapon.getEnchantments().getOrDefault(Enchantment.LOOTING, 0);
+        }
+
+        double labourChance = LaboursOfHercules.config.labourDropChance + LaboursOfHercules.config.lootingExtraChance * lootingLevel;
+        double crystalChance = LaboursOfHercules.config.crystalDropChance + LaboursOfHercules.config.lootingExtraChance * lootingLevel;
+
         Random random = new Random();
-        if(random.nextInt(100) < LaboursOfHercules.config.labourDropChance) {
+        if(random.nextDouble(100) < labourChance) {
             event.getDrops().add(new RandomLabourItem());
         }
 
-        if(random.nextInt(100) < LaboursOfHercules.config.crystalDropChance) {
+        if(random.nextDouble(100) < crystalChance) {
             event.getDrops().add(new RandomCrystalItem());
         }
     }

@@ -21,6 +21,7 @@ Messages:
 Config:
   labourDropChance: 1
   crystalDropChance: 1
+  lootingExtraChance: 0.5
 
 Items:
   randomLabour:
