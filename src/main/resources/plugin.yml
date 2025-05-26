@@ -3,7 +3,7 @@ version: 1.0
 main: wbe.laboursOfHercules.LaboursOfHercules
 api-version: 1.21
 author: wbe
-depend: [MythicMobs, CrazyCrates, YggdrasilsBark, AcuaticLostWealth]
+softdepend: [MythicMobs, CrazyCrates, YggdrasilsBark, AcuaticLostWealth]
 commands:
   LaboursOfHercules:
     description: LaboursOfHercules main command
