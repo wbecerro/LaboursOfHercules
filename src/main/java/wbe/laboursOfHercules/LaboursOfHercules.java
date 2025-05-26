@@ -3,6 +3,7 @@ package wbe.laboursOfHercules;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import wbe.laboursOfHercules.commands.CommandListener;
+import wbe.laboursOfHercules.commands.TabListener;
 import wbe.laboursOfHercules.config.Config;
 import wbe.laboursOfHercules.config.Messages;
 import wbe.laboursOfHercules.listeners.EventListeners;
@@ -15,6 +16,8 @@ public final class LaboursOfHercules extends JavaPlugin {
     private FileConfiguration configuration;
 
     private CommandListener commandListener;
+
+    private TabListener tabListener;
 
     private EventListeners eventListeners;
 
@@ -30,6 +33,8 @@ public final class LaboursOfHercules extends JavaPlugin {
 
         commandListener = new CommandListener();
         getCommand("laboursofhercules").setExecutor(commandListener);
+        tabListener = new TabListener();
+        getCommand("laboursofhercules").setTabCompleter(tabListener);
         eventListeners = new EventListeners();
         eventListeners.initializeListeners();
     }
