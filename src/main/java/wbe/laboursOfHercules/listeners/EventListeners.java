@@ -33,5 +33,9 @@ public class EventListeners {
                 && Bukkit.getPluginManager().getPlugin("AquaticLostWealth") != null) {
             pluginManager.registerEvents(new PlayerReceiveRewardListeners(), plugin);
         }
+
+        if(Bukkit.getPluginManager().getPlugin("TartarusRiches") != null) {
+            pluginManager.registerEvents(new PlayerReceiveGemListeners(), plugin);
+        }
     }
 }

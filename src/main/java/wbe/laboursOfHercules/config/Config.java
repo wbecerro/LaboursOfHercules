@@ -175,6 +175,8 @@ public class Config {
             case "CRATE":
                 List<String> crates = config.getStringList("Labours." + labour + ".tasks." + task + ".crates");
                 return new CrateTask(id, minAmount, maxAmount, name, lore, crates);
+            case "GEM":
+                return new GemTask(id, minAmount, maxAmount, name, lore);
         }
 
         return new BreakTask("error", 1, 1, "ERROR", "ERROR", new ArrayList<>(Arrays.asList(Material.STONE)));

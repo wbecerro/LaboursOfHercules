@@ -182,3 +182,9 @@ Labours:
         lore: '&a★ &7Abre %amount% cajas esenciales: %completed%'
         crates:
           - ESENCIAL
+      gemTask:
+        type: GEM
+        minAmount: 1
+        maxAmount: 2
+        name: "Gem Task"
+        lore: '&a★ &7Consigue %amount% gemas: %completed%'

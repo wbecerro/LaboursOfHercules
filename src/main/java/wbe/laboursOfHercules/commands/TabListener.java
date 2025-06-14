@@ -36,14 +36,22 @@ public class TabListener implements TabCompleter {
                 case "labour":
                     List<String> labours = new ArrayList<>();
                     LaboursOfHercules.config.labours.entrySet().forEach((entry -> {
-                        labours.add(entry.getValue().getId());
+                        if(args[1].isEmpty()) {
+                            labours.add(entry.getValue().getId());
+                        } else if(entry.getValue().getId().startsWith(args[1])) {
+                            labours.add(entry.getValue().getId());
+                        }
                     }));
                     completions.addAll(labours);
                     break;
                 case "crystal":
                     List<String> crystals = new ArrayList<>();
                     LaboursOfHercules.config.crystals.entrySet().forEach((entry -> {
-                        crystals.add(entry.getValue().getId());
+                        if(args[1].isEmpty()) {
+                            crystals.add(entry.getValue().getId());
+                        } else if(entry.getValue().getId().startsWith(args[1])) {
+                            crystals.add(entry.getValue().getId());
+                        }
                     }));
                     completions.addAll(crystals);
                     break;
@@ -61,7 +69,11 @@ public class TabListener implements TabCompleter {
                 case "crystal":
                 case "random":
                     for(Player player : Bukkit.getOnlinePlayers()) {
-                        completions.add(player.getName());
+                        if(args[2].isEmpty()) {
+                            completions.add(player.getName());
+                        } else if(player.getName().startsWith(args[2])) {
+                            completions.add(player.getName());
+                        }
                     }
                     break;
             }
