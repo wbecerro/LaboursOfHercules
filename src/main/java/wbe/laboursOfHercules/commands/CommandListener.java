@@ -7,12 +7,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.items.CrystalItem;
-import wbe.laboursOfHercules.items.LabourItem;
 import wbe.laboursOfHercules.items.RandomCrystalItem;
 import wbe.laboursOfHercules.items.RandomLabourItem;
 import wbe.laboursOfHercules.labours.Crystal;
 import wbe.laboursOfHercules.labours.Labour;
+import wbe.laboursOfHercules.labours.PlayerLabour;
+import wbe.laboursOfHercules.listeners.MenuListener;
 import wbe.laboursOfHercules.util.Utilities;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 public class CommandListener implements CommandExecutor {
 
@@ -61,12 +65,10 @@ public class CommandListener implements CommandExecutor {
                     return false;
                 }
                 for(int i=0;i<amount;i++) {
-                    LabourItem labourItem = new LabourItem(labour);
-                    if(player.getInventory().firstEmpty() == -1) {
-                        player.getWorld().dropItem(player.getLocation(), labourItem);
-                    } else {
-                        player.getInventory().addItem(labourItem);
-                    }
+                    PlayerLabour playerLabour = utilities.createPlayerLabour(labour);
+                    HashMap<UUID, PlayerLabour> playerLabours = LaboursOfHercules.activePlayers.get(player);
+                    playerLabours.put(playerLabour.getUuid(), playerLabour);
+                    LaboursOfHercules.activePlayers.put(player, playerLabours);
                 }
             } else if(args[0].equalsIgnoreCase("crystal")) {
                 if(!sender.hasPermission("laboursofhercules.command.crystal")) {
@@ -133,6 +135,17 @@ public class CommandListener implements CommandExecutor {
                             player.getInventory().addItem(labour);
                         }
                     }
+                }
+            } else if(args[0].equalsIgnoreCase("list")) {
+                if(!sender.hasPermission("laboursofhercules.command.list")) {
+                    sender.sendMessage(LaboursOfHercules.messages.noPermission);
+                    return false;
+                }
+
+                try {
+                    MenuListener.openMenu(player, 1);
+                } catch(Exception e) {
+                    sender.sendMessage(e.getMessage());
                 }
             } else if(args[0].equalsIgnoreCase("reload")) {
                 if(!sender.hasPermission("laboursofhercules.command.reload")) {

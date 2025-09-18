@@ -1,8 +1,6 @@
 package wbe.laboursOfHercules.labours;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.labours.tasks.Task;
 
 import java.util.*;

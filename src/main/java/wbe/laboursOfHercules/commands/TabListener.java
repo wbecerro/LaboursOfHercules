@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TabListener implements TabCompleter {
 
-    private final List<String> subCommands = Arrays.asList("help", "labour", "crystal", "random", "reload");
+    private final List<String> subCommands = Arrays.asList("help", "labour", "crystal", "random", "list", "reload");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {

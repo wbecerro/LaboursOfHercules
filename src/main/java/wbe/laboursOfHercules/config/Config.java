@@ -22,6 +22,14 @@ public class Config {
 
     public double lootingExtraChance;
 
+    public int maxLaboursPerPlayer;
+
+    public boolean updateAllLabours;
+
+    public String menuTitle;
+
+    public Material menuBorder;
+
     public Material randomLabourMaterial;
 
     public String randomLabourName;
@@ -50,10 +58,16 @@ public class Config {
         labourDropChance = config.getInt("Config.labourDropChance");
         crystalDropChance = config.getInt("Config.crystalDropChance");
         lootingExtraChance = config.getDouble("Config.lootingExtraChance");
+        maxLaboursPerPlayer = config.getInt("Config.maxLaboursPerPlayer");
+        updateAllLabours = config.getBoolean("Config.updateAllLabours");
+        menuTitle = config.getString("Menu.title").replace("&", "§");
+        menuBorder = Material.valueOf(config.getString("Menu.borderMaterial"));
+
         randomLabourMaterial = Material.valueOf(config.getString("Items.randomLabour.material"));
         randomLabourName = config.getString("Items.randomLabour.name").replace("&", "§");
         randomLabourLore = config.getStringList("Items.randomLabour.lore");
         randomLabourGlow = config.getBoolean("Items.randomLabour.glow");
+
         randomCrystalMaterial = Material.valueOf(config.getString("Items.randomCrystal.material"));
         randomCrystalName = config.getString("Items.randomCrystal.name").replace("&", "§");
         randomCrystalLore = config.getStringList("Items.randomCrystal.lore");
@@ -177,6 +191,10 @@ public class Config {
                 return new CrateTask(id, minAmount, maxAmount, name, lore, crates);
             case "GEM":
                 return new GemTask(id, minAmount, maxAmount, name, lore);
+            case "MOVE":
+                return new MoveTask(id, minAmount, maxAmount, name, lore);
+            case "SWIM":
+                return new SwimTask(id, minAmount, maxAmount, name, lore);
         }
 
         return new BreakTask("error", 1, 1, "ERROR", "ERROR", new ArrayList<>(Arrays.asList(Material.STONE)));

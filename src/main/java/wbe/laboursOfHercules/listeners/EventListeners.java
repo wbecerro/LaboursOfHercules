@@ -18,8 +18,12 @@ public class EventListeners {
         pluginManager.registerEvents(new EntityTameListeners(), plugin);
         pluginManager.registerEvents(new PlayerFishListeners(), plugin);
         pluginManager.registerEvents(new PlayerShearEntityListeners(), plugin);
-        pluginManager.registerEvents(new InventoryClickListeners(), plugin);
         pluginManager.registerEvents(new PlayerInteractListeners(), plugin);
+        pluginManager.registerEvents(new PlayerMoveListeners(), plugin);
+        pluginManager.registerEvents(new PlayerJoinListeners(), plugin);
+        pluginManager.registerEvents(new PlayerQuitListeners(), plugin);
+        pluginManager.registerEvents(new MenuListener(), plugin);
+        pluginManager.registerEvents(new InventoryCloseListeners(), plugin);
 
         if(Bukkit.getPluginManager().getPlugin("CrazyCrates") != null) {
             pluginManager.registerEvents(new CrateOpenListeners(), plugin);
@@ -30,7 +34,7 @@ public class EventListeners {
         }
 
         if(Bukkit.getPluginManager().getPlugin("YggdrasilsBark") != null
-                && Bukkit.getPluginManager().getPlugin("AquaticLostWealth") != null) {
+                && Bukkit.getPluginManager().getPlugin("AcuaticLostWealth") != null) {
             pluginManager.registerEvents(new PlayerReceiveRewardListeners(), plugin);
         }
 

@@ -1,21 +1,26 @@
 package wbe.laboursOfHercules.util;
 
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.events.CompleteLabourEvent;
 import wbe.laboursOfHercules.events.CompleteTaskEvent;
 import wbe.laboursOfHercules.labours.Labour;
+import wbe.laboursOfHercules.labours.PlayerLabour;
+import wbe.laboursOfHercules.labours.PlayerLabourTask;
 import wbe.laboursOfHercules.labours.tasks.Task;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Utilities {
@@ -27,118 +32,218 @@ public class Utilities {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
-    public List<ItemStack> getLaboursFromInventory(Player player) {
-        PlayerInventory inventory = player.getInventory();
-        List<ItemStack> labours = new ArrayList<>();
-        NamespacedKey baseKey = new NamespacedKey(plugin, "labour");
-        for(ItemStack item : inventory.getContents()) {
-            if(item == null) {
+    public static void savePlayerData(Player player) {
+        try {
+            File playerFile = new File(
+                    LaboursOfHercules.getInstance().getDataFolder(), "saves/" + player.getUniqueId() + ".yml"
+            );
+            boolean fileCreated = playerFile.createNewFile();
+            FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+            HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
+
+            playerConfig.set("labours", null);
+
+            labours.forEach((uuid, labour) -> {
+                String labourId = labour.getLabour().getId();
+                // Guardar tareas en la labor
+                playerConfig.set("labours." + uuid.toString() + ".id", labourId);
+                for(Map.Entry<PlayerLabourTask, Integer> task : labour.getPlayerTasks().entrySet()) {
+                    PlayerLabourTask labourTask = task.getKey();
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".progress", task.getValue());
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".max", labourTask.getMax());
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".completed", labourTask.isCompleted());
+                }
+            });
+
+            playerConfig.save(playerFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while saving the " + player.getName() + " data.");
+        }
+    }
+
+    public static void loadPlayerData(Player player) {
+        File playerFile = new File(
+                LaboursOfHercules.getInstance().getDataFolder(), "saves/" + player.getUniqueId() + ".yml"
+        );
+        HashMap<UUID ,PlayerLabour> labours = new HashMap<>();
+        if(!playerFile.exists()) {
+            LaboursOfHercules.activePlayers.put(player, labours);
+            return;
+        }
+
+        FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
+        if(playerConfig.getKeys(false).isEmpty()) {
+            LaboursOfHercules.activePlayers.put(player, labours);
+            return;
+        }
+
+        Set<String> labourUUIDs = playerConfig.getConfigurationSection("labours").getKeys(false);
+        for(String uuid : labourUUIDs) {
+            Labour labour = LaboursOfHercules.config.labours.get(playerConfig.getString("labours." + uuid + ".id"));
+            if(labour == null) {
                 continue;
             }
-            ItemMeta meta = item.getItemMeta();
-            if(meta.getPersistentDataContainer().has(baseKey)) {
-                labours.add(item);
+
+            Set<String> configTasks = playerConfig.getConfigurationSection("labours." + uuid + ".tasks").getKeys(false);
+            HashMap<PlayerLabourTask, Integer> tasks = new HashMap<>();
+            for(String configTask : configTasks) {
+                Task task = labour.getTasks().get(configTask);
+                int max = playerConfig.getInt("labours." + uuid + ".tasks." + configTask + ".max");
+                int progress = playerConfig.getInt("labours." + uuid + ".tasks." + configTask + ".progress");
+                boolean completed = playerConfig.getBoolean("labours." + uuid + ".tasks." + configTask + ".completed");
+                PlayerLabourTask labourTask = new PlayerLabourTask(task, max);
+                if(completed) {
+                    labourTask.complete();
+                }
+                tasks.put(labourTask, progress);
+            }
+            PlayerLabour playerLabour = new PlayerLabour(UUID.fromString(uuid), labour, tasks);
+            labours.put(UUID.fromString(uuid), playerLabour);
+        }
+
+        LaboursOfHercules.activePlayers.put(player, labours);
+    }
+
+    public PlayerLabour createPlayerLabour(Labour labour) {
+        HashMap<PlayerLabourTask, Integer> tasks = new HashMap<>();
+        for(Task task : getTasks(labour)) {
+            tasks.put(new PlayerLabourTask(task, task.getAmount()), 0);
+        }
+
+        return new PlayerLabour(labour, tasks);
+    }
+
+    public List<Task> getTasks(Labour labour) {
+        int taskAmount = getRandomNumber(labour.getMinTasks(), labour.getMaxTasks());
+        List<Task> tasks = new ArrayList<>();
+        for(int i=0;i<taskAmount;i++) {
+            Task task = getRandomTask(tasks, labour);
+            if(task == null) {
+                continue;
+            }
+            tasks.add(task);
+        }
+
+        return tasks;
+    }
+
+    private Task getRandomTask(List<Task> tasks, Labour labour) {
+        boolean found = true;
+
+        int maxTries = 5;
+        for(int i=0;i<maxTries;i++) {
+            Task randomTask = labour.getRandomTask();
+            for(Task task : tasks) {
+                if(randomTask.getId().equalsIgnoreCase(task.getId())) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if(found) {
+                return randomTask;
             }
         }
 
-        return labours;
+        return null;
     }
 
-    public void updateProgress(Labour labour, Player player, ItemStack item, Task task) {
-        NamespacedKey tasksKey = new NamespacedKey(plugin, "tasks");
-        NamespacedKey taskKey = new NamespacedKey(plugin, task.getId());
-        NamespacedKey taskMaxKey = new NamespacedKey(plugin, task.getId() + "_max");
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
-        int line = findLine(task.getLore().split("%amount%"), lore);
-
-        int newAmount = meta.getPersistentDataContainer().get(taskKey, PersistentDataType.INTEGER) + 1;
-        int maxAmount = meta.getPersistentDataContainer().get(taskMaxKey, PersistentDataType.INTEGER);
-        boolean end = false;
-        if(newAmount >= maxAmount) {
-            end = true;
-        }
-
-        updateTaskLine(player, item, taskKey, taskMaxKey, line, tasksKey, newAmount, maxAmount, task, labour, end);
-    }
-
-    public void updateProgress(Labour labour, Player player, ItemStack item, Task task, int amount) {
-        NamespacedKey tasksKey = new NamespacedKey(plugin, "tasks");
-        NamespacedKey taskKey = new NamespacedKey(plugin, task.getId());
-        NamespacedKey taskMaxKey = new NamespacedKey(plugin, task.getId() + "_max");
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
-        int line = findLine(task.getLore().split("%amount%"), lore);
-
-        int newAmount = meta.getPersistentDataContainer().get(taskKey, PersistentDataType.INTEGER) + amount;
-        int maxAmount = meta.getPersistentDataContainer().get(taskMaxKey, PersistentDataType.INTEGER);
-        boolean end = false;
-        if(newAmount >= maxAmount) {
-            end = true;
-        }
-
-        updateTaskLine(player, item, taskKey, taskMaxKey, line, tasksKey, newAmount, maxAmount, task, labour, end);
-    }
-
-    public boolean updateTaskLine(Player player, ItemStack item, NamespacedKey taskKey, NamespacedKey taskMaxKey, int line,
-                               NamespacedKey tasksKey, int amount, int max, Task task, Labour labour, boolean end) {
-        ItemMeta meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
-        if(end) {
-            amount = max;
-            meta.getPersistentDataContainer().remove(taskKey);
-            meta.getPersistentDataContainer().remove(taskMaxKey);
-            String tasks = item.getItemMeta().getPersistentDataContainer().get(tasksKey, PersistentDataType.STRING);
-
-            String[] tasksParts = tasks.split("\\.");
-            if(tasksParts.length == 1) {
-                player.sendTitle(labour.getCompleteTitle(), "", 10, 70, 20);
-                if(!player.hasPermission("laboursofhercules.skip.sounds")) {
-                    player.playSound(player, Sound.valueOf(labour.getCompleteSound()), 10, 1);
-                }
-                for(String broadcast : labour.getCompleteBroadcast()) {
-                    Bukkit.broadcastMessage(broadcast.replace("&", "§")
-                            .replace("%player%", player.getName()));
-                }
-                giveRewards(player, labour, item);
-                player.getInventory().removeItem(item);
-                player.updateInventory();
-                return true;
-            }
-
-            player.sendTitle(labour.getCompleteTaskTitle(), task.getName(), 10, 70, 20);
+    public boolean updateProgress(PlayerLabour labour, Player player, PlayerLabourTask task, int amount) {
+        int newProgress = labour.getPlayerTasks().get(task) + amount;
+        labour.getPlayerTasks().put(task, newProgress);
+        // Se completa la tarea
+        if(newProgress >= task.getMax()) {
+            task.complete();
+            player.sendTitle(labour.getLabour().getCompleteTaskTitle(), task.getTask().getName(), 10, 70, 20);
             if(!player.hasPermission("laboursofhercules.skip.sounds")) {
-                player.playSound(player, Sound.valueOf(labour.getCompleteTaskSound()), 10, 1);
+                player.playSound(player, Sound.valueOf(labour.getLabour().getCompleteTaskSound()), 10, 1);
             }
 
-            StringBuilder tasksString = new StringBuilder();
-            for(String taskPart : tasksParts) {
-                if(!taskPart.equalsIgnoreCase(task.getId())) {
-                    tasksString.append(taskPart).append(".");
-                }
+            plugin.getServer().getPluginManager().callEvent(new CompleteTaskEvent(player, labour.getLabour(), task.getTask()));
+        }
+
+        // Se completa la labor
+        if(labour.areTasksCompleted()) {
+            player.sendTitle(labour.getLabour().getCompleteTitle(), "", 10, 70, 20);
+            if(!player.hasPermission("laboursofhercules.skip.sounds")) {
+                player.playSound(player, Sound.valueOf(labour.getLabour().getCompleteSound()), 10, 1);
             }
 
-            meta.getPersistentDataContainer().set(tasksKey, PersistentDataType.STRING,
-                    tasksString.toString().toString().substring(0, tasksString.toString().toString().length() - 1));
-            plugin.getServer().getPluginManager().callEvent(new CompleteTaskEvent(player, item, labour, task));
-        } else {
-            meta.getPersistentDataContainer().set(taskKey, PersistentDataType.INTEGER, amount);
-        }
+            for(String broadcast : labour.getLabour().getCompleteBroadcast()) {
+                Bukkit.broadcastMessage(broadcast.replace("&", "§")
+                        .replace("%player%", player.getName()));
+            }
 
-        if(!end) {
-            lore.set(line, task.getLore()
-                    .replace("%amount%", String.valueOf(max))
-                    .replace("%completed%", String.valueOf(amount)));
-        } else {
-            lore.set(line, ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + ChatColor.stripColor(task.getLore())
-                    .replace("%amount%", String.valueOf(max))
-                    .replace("%completed%", String.valueOf(amount)));
-        }
-        meta.setLore(lore);
+            giveRewards(player, labour.getLabour());
 
-        item.setItemMeta(meta);
+            HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
+            labours.remove(labour.getUuid());
+            LaboursOfHercules.activePlayers.put(player, labours);
+            return true;
+        }
 
         return false;
+    }
+
+    public boolean applyCrystal(PlayerLabour labour, Player player) {
+        boolean completed = false;
+        for(PlayerLabourTask task : labour.getPlayerTasks().keySet()) {
+            if(!task.isCompleted()) {
+                task.complete();
+                break;
+            }
+        }
+
+        if(labour.areTasksCompleted()) {
+            player.sendTitle(labour.getLabour().getCompleteTitle(), "", 10, 70, 20);
+            if(!player.hasPermission("laboursofhercules.skip.sounds")) {
+                player.playSound(player, Sound.valueOf(labour.getLabour().getCompleteSound()), 10, 1);
+            }
+
+            for(String broadcast : labour.getLabour().getCompleteBroadcast()) {
+                Bukkit.broadcastMessage(broadcast.replace("&", "§")
+                        .replace("%player%", player.getName()));
+            }
+
+            giveRewards(player, labour.getLabour());
+
+            HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
+            labours.remove(labour.getUuid());
+            LaboursOfHercules.activePlayers.put(player, labours);
+            completed = true;
+        }
+
+        return completed;
+    }
+
+    public List<ItemStack> getCrystalsStuck(Inventory inventory) {
+        NamespacedKey crystalKey = new NamespacedKey(LaboursOfHercules.getInstance(), "crystal");
+        List<ItemStack> crystals = new ArrayList<>();
+        for(ItemStack item : inventory.getContents()) {
+            if(isAir(item)) {
+                continue;
+            }
+
+            ItemMeta meta = item.getItemMeta();
+            if(meta == null) {
+                continue;
+            }
+
+            if(meta.getPersistentDataContainer().has(crystalKey)) {
+                crystals.add(item);
+            }
+        }
+
+        return crystals;
+    }
+
+    public void addItemToInventory(Player player, ItemStack item) {
+        if(player.getInventory().firstEmpty() == -1) {
+            player.getWorld().dropItem(player.getLocation(), item);
+        } else {
+            player.getInventory().addItem(item);
+        }
     }
 
     public Labour getRandomLabour() {
@@ -157,15 +262,7 @@ public class Utilities {
         return (Labour) labours.toArray()[labours.size() - 1];
     }
 
-    public Task getFirstTask(ItemStack item, Labour labour) {
-        NamespacedKey tasksKey = new NamespacedKey(plugin, "tasks");
-        String tasks = item.getItemMeta().getPersistentDataContainer().get(tasksKey, PersistentDataType.STRING);
-        String[] tasksParts = tasks.split("\\.");
-        Task task = labour.getTasks().get(tasksParts[0]);
-        return task;
-    }
-
-    private void giveRewards(Player player, Labour labour, ItemStack item) {
+    private void giveRewards(Player player, Labour labour) {
         int rewardsAmount = getRandomNumber(labour.getMinRewards(), labour.getMaxRewards());
         List<String> rewards = new ArrayList<>();
         for(int i=0;i<rewardsAmount;i++) {
@@ -173,8 +270,9 @@ public class Utilities {
             rewards.add(reward);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), reward);
         }
-        plugin.getServer().getPluginManager().callEvent(new CompleteLabourEvent(player, item, labour, rewards));
+        plugin.getServer().getPluginManager().callEvent(new CompleteLabourEvent(player, labour, rewards));
     }
+
     public int getCraftedAmount(CraftItemEvent event) {
         int amount = event.getRecipe().getResult().getAmount();
         ClickType click = event.getClick();
@@ -207,10 +305,6 @@ public class Utilities {
                 amount = maxCraftable;
                 break;
             default:
-        }
-
-        if(amount == 0) {
-            return 0;
         }
 
         return amount;
@@ -250,18 +344,5 @@ public class Utilities {
 
     private boolean isAir(ItemStack item) {
         return item == null || item.getType().equals(Material.AIR);
-    }
-
-
-    public int findLine(String[] parts, List<String> lore) {
-        int size = lore.size();
-        for(int i=0;i<size;i++) {
-            if(lore.get(i).contains(parts[0].replace("%completed%", "")) &&
-                    lore.get(i).contains(parts[1].replace("%completed%", ""))) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 }

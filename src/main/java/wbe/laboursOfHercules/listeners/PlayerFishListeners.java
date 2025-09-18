@@ -1,26 +1,21 @@
 package wbe.laboursOfHercules.listeners;
 
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
-import wbe.laboursOfHercules.labours.Labour;
+import wbe.laboursOfHercules.labours.PlayerLabour;
+import wbe.laboursOfHercules.labours.PlayerLabourTask;
 import wbe.laboursOfHercules.labours.tasks.FishTask;
 import wbe.laboursOfHercules.labours.tasks.Task;
 import wbe.laboursOfHercules.util.Utilities;
 
-import java.util.List;
+import java.util.*;
 
 public class PlayerFishListeners implements Listener {
-
-    private LaboursOfHercules plugin = LaboursOfHercules.getInstance();
 
     private Utilities utilities = new Utilities();
 
@@ -32,35 +27,38 @@ public class PlayerFishListeners implements Listener {
             return;
         }
 
-        if(!(event.getCaught() instanceof Item)) {
-            return;
-        }
-        Item caught = (Item) event.getCaught();
-
-        List<ItemStack> labours = utilities.getLaboursFromInventory(player);
-        if(labours.isEmpty()) {
+        if(!(event.getCaught() instanceof Item caught)) {
             return;
         }
 
-        NamespacedKey baseKey = new NamespacedKey(plugin, "labour");
-        for(ItemStack item : labours) {
-            String tier = item.getItemMeta().getPersistentDataContainer().get(baseKey, PersistentDataType.STRING);
-            Labour labour = LaboursOfHercules.config.labours.get(tier);
-            NamespacedKey tasksKey = new NamespacedKey(plugin, "tasks");
-            String tasks = item.getItemMeta().getPersistentDataContainer().get(tasksKey, PersistentDataType.STRING);
-            String[] tasksParts = tasks.split("\\.");
-            for(String taskId : tasksParts) {
-                Task task = labour.getTasks().get(taskId);
-                if(!(task instanceof FishTask)) {
+        HashMap<UUID, PlayerLabour> playerLabours = LaboursOfHercules.activePlayers.get(player);
+        if(playerLabours.isEmpty()) {
+            return;
+        }
+
+        Collection<PlayerLabour> labours = new ArrayList<>(playerLabours.values());
+        for(PlayerLabour playerLabour : labours) {
+            for(Map.Entry<PlayerLabourTask, Integer> labourTask : playerLabour.getPlayerTasks().entrySet()) {
+                Task task = labourTask.getKey().getTask();
+                if(labourTask.getKey().isCompleted()) {
                     continue;
                 }
 
-                for(Material material : ((FishTask) task).getItems()) {
-                    if(!material.equals(caught.getItemStack().getType())) {
-                        continue;
-                    }
+                if(!(task instanceof FishTask fishTask)) {
+                    continue;
+                }
 
-                    utilities.updateProgress(labour, player, item, task);
+                if(!fishTask.getItems().contains(caught.getItemStack().getType())) {
+                    continue;
+                }
+
+                int amount = caught.getItemStack().getAmount();
+                if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount)) {
+                    break;
+                }
+
+                if(!LaboursOfHercules.config.updateAllLabours) {
+                    return;
                 }
             }
         }

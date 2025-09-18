@@ -12,8 +12,6 @@ public class CompleteTaskEvent extends Event implements Cancellable {
 
     private Player player;
 
-    private ItemStack labourItem;
-
     private Task task;
 
     private Labour type;
@@ -22,19 +20,14 @@ public class CompleteTaskEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public CompleteTaskEvent(Player player, ItemStack labourItem, Labour type, Task task) {
+    public CompleteTaskEvent(Player player, Labour type, Task task) {
         this.player = player;
-        this.labourItem = labourItem;
         this.task = task;
         this.type = type;
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public ItemStack getLabourItem() {
-        return labourItem;
     }
 
     public Task getTask() {

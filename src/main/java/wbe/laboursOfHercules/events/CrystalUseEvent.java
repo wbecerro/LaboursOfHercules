@@ -11,8 +11,6 @@ public class CrystalUseEvent extends Event implements Cancellable {
 
     private Player player;
 
-    private ItemStack labourItem;
-
     private ItemStack crystalItem;
 
     private Labour type;
@@ -21,19 +19,14 @@ public class CrystalUseEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public CrystalUseEvent(Player player, ItemStack labourItem, ItemStack crystalItem, Labour type) {
+    public CrystalUseEvent(Player player, ItemStack crystalItem, Labour type) {
         this.player = player;
-        this.labourItem = labourItem;
         this.crystalItem = crystalItem;
         this.type = type;
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public ItemStack getLabourItem() {
-        return labourItem;
     }
 
     public ItemStack getCrystalItem() {
