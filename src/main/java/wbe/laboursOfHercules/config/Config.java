@@ -30,6 +30,8 @@ public class Config {
 
     public Material menuBorder;
 
+    public String removeText;
+
     public Material randomLabourMaterial;
 
     public String randomLabourName;
@@ -62,6 +64,7 @@ public class Config {
         updateAllLabours = config.getBoolean("Config.updateAllLabours");
         menuTitle = config.getString("Menu.title").replace("&", "§");
         menuBorder = Material.valueOf(config.getString("Menu.borderMaterial"));
+        removeText = config.getString("Menu.removeText").replace("&", "§");
 
         randomLabourMaterial = Material.valueOf(config.getString("Items.randomLabour.material"));
         randomLabourName = config.getString("Items.randomLabour.name").replace("&", "§");

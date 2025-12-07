@@ -33,8 +33,9 @@ Config:
   updateAllLabours: true
 
 Menu:
-  title: "&aLabores"
+  title: "&8Labores &8(%active%/&4%total%&8)"
   borderMaterial: GRAY_STAINED_GLASS_PANE
+  removeText: "&eClic derecho para eliminar permanentemente"
 
 Items:
   randomLabour:

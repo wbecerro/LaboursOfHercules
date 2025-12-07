@@ -217,6 +217,14 @@ public class Utilities {
         return completed;
     }
 
+    public boolean removeLabour(Player player, UUID uuid) {
+        HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
+        boolean removed = labours.remove(uuid) != null;
+        LaboursOfHercules.activePlayers.put(player, labours);
+
+        return removed;
+    }
+
     public List<ItemStack> getCrystalsStuck(Inventory inventory) {
         NamespacedKey crystalKey = new NamespacedKey(LaboursOfHercules.getInstance(), "crystal");
         List<ItemStack> crystals = new ArrayList<>();

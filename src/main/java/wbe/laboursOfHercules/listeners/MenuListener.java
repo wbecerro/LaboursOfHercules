@@ -7,12 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
@@ -22,7 +21,6 @@ import wbe.laboursOfHercules.labours.PlayerLabour;
 import wbe.laboursOfHercules.util.Utilities;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class MenuListener implements Listener {
@@ -103,7 +101,9 @@ public class MenuListener implements Listener {
         }
         NamespacedKey goToPage = new NamespacedKey(LaboursOfHercules.getInstance(), "goToPage");
 
-        Inventory inventory = Bukkit.createInventory(null, 54, LaboursOfHercules.config.menuTitle);
+        Inventory inventory = Bukkit.createInventory(null, 54, LaboursOfHercules.config.menuTitle
+                .replace("%active%", String.valueOf(playerLabours.size()))
+                .replace("%total%", String.valueOf(LaboursOfHercules.config.maxLaboursPerPlayer)));
         fillBorders(inventory, page);
         fillLabours(inventory, page, playerLabours);
         if(necesaryPages > page) {
@@ -167,6 +167,19 @@ public class MenuListener implements Listener {
             } catch(Exception e) {
                 player.sendMessage(LaboursOfHercules.messages.pageNotFound);
             }
+        }
+
+        NamespacedKey labourKey = new NamespacedKey(LaboursOfHercules.getInstance(), "labour");
+        if(event.getClick().equals(ClickType.RIGHT) && meta.getPersistentDataContainer().has(labourKey)) {
+            UUID uuid = UUID.fromString(meta.getPersistentDataContainer().get(labourKey, PersistentDataType.STRING));
+            utilities.removeLabour(player, uuid);
+            event.setCancelled(true);
+            try {
+                openMenu(player, currentPage);
+            } catch(Exception ex) {
+                player.closeInventory();
+            }
+            return;
         }
 
         // Aplicación del cristal

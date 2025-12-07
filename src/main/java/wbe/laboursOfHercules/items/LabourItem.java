@@ -70,6 +70,10 @@ public class LabourItem extends ItemStack {
                         .replace("%completed%", String.valueOf(labour.getPlayerTasks().get(task))));
             }
         }
+
+        lore.add("");
+        lore.add(LaboursOfHercules.config.removeText);
+
         meta.setLore(lore);
         setItemMeta(meta);
     }
