@@ -46,20 +46,20 @@ public class PlayerMoveListeners implements Listener {
                 }
 
                 if(task instanceof MoveTask) {
-                    if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress)) {
-                        break;
-                    }
+                    utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress);
 
                     if(!LaboursOfHercules.config.updateAllLabours) {
                         return;
+                    } else {
+                        break;
                     }
                 } else if(task instanceof SwimTask && player.isSwimming()) {
-                    if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress)) {
-                        break;
-                    }
+                    utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress);
 
                     if(!LaboursOfHercules.config.updateAllLabours) {
                         return;
+                    } else {
+                        break;
                     }
                 }
             }

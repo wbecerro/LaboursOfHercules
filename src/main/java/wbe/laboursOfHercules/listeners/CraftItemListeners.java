@@ -52,12 +52,12 @@ public class CraftItemListeners implements Listener {
                 }
 
                 int amount = utilities.getCraftedAmount(event);
-                if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount)) {
-                    break;
-                }
+                utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount);
 
                 if(!LaboursOfHercules.config.updateAllLabours) {
                     return;
+                } else {
+                    break;
                 }
             }
         }

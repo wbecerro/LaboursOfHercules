@@ -51,12 +51,12 @@ public class EntityDeathListeners implements Listener {
                     continue;
                 }
 
-                if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), 1)) {
-                    break;
-                }
+                utilities.updateProgress(playerLabour, player, labourTask.getKey(), 1);
 
                 if(!LaboursOfHercules.config.updateAllLabours) {
                     return;
+                } else {
+                    break;
                 }
             }
         }

@@ -53,12 +53,12 @@ public class PlayerFishListeners implements Listener {
                 }
 
                 int amount = caught.getItemStack().getAmount();
-                if(utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount)) {
-                    break;
-                }
+                utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount);
 
                 if(!LaboursOfHercules.config.updateAllLabours) {
                     return;
+                } else {
+                    break;
                 }
             }
         }
