@@ -38,9 +38,9 @@ public class PlayerFishListeners implements Listener {
 
         Collection<PlayerLabour> labours = new ArrayList<>(playerLabours.values());
         for(PlayerLabour playerLabour : labours) {
-            for(Map.Entry<PlayerLabourTask, Integer> labourTask : playerLabour.getPlayerTasks().entrySet()) {
-                Task task = labourTask.getKey().getTask();
-                if(labourTask.getKey().isCompleted()) {
+            for(PlayerLabourTask labourTask : playerLabour.getPlayerTasks()) {
+                Task task = labourTask.getTask();
+                if(labourTask.isCompleted()) {
                     continue;
                 }
 
@@ -53,7 +53,7 @@ public class PlayerFishListeners implements Listener {
                 }
 
                 int amount = caught.getItemStack().getAmount();
-                utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount);
+                utilities.updateProgress(playerLabour, player, labourTask, amount);
 
                 if(!LaboursOfHercules.config.updateAllLabours) {
                     return;

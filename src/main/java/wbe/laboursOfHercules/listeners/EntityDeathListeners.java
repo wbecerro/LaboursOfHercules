@@ -37,9 +37,9 @@ public class EntityDeathListeners implements Listener {
 
         Collection<PlayerLabour> labours = new ArrayList<>(playerLabours.values());
         for(PlayerLabour playerLabour : labours) {
-            for(Map.Entry<PlayerLabourTask, Integer> labourTask : playerLabour.getPlayerTasks().entrySet()) {
-                Task task = labourTask.getKey().getTask();
-                if(labourTask.getKey().isCompleted()) {
+            for(PlayerLabourTask labourTask : playerLabour.getPlayerTasks()) {
+                Task task = labourTask.getTask();
+                if(labourTask.isCompleted()) {
                     continue;
                 }
 
@@ -51,7 +51,7 @@ public class EntityDeathListeners implements Listener {
                     continue;
                 }
 
-                utilities.updateProgress(playerLabour, player, labourTask.getKey(), 1);
+                utilities.updateProgress(playerLabour, player, labourTask, 1);
 
                 if(!LaboursOfHercules.config.updateAllLabours) {
                     return;

@@ -14,7 +14,6 @@ import wbe.laboursOfHercules.labours.PlayerLabourTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class LabourItem extends ItemStack {
 
@@ -55,7 +54,7 @@ public class LabourItem extends ItemStack {
     }
 
     private void setTasks() {
-        Set<PlayerLabourTask> tasks = labour.getPlayerTasks().keySet();
+        List<PlayerLabourTask> tasks = labour.getPlayerTasks();
         ItemMeta meta = getItemMeta();
         List<String> lore = meta.getLore();
 
@@ -67,7 +66,7 @@ public class LabourItem extends ItemStack {
             } else {
                 lore.add(task.getTask().getLore()
                         .replace("%amount%", String.valueOf(task.getMax()))
-                        .replace("%completed%", String.valueOf(labour.getPlayerTasks().get(task))));
+                        .replace("%completed%", String.valueOf(task.getProgress())));
             }
         }
 

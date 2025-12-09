@@ -47,11 +47,10 @@ public class Utilities {
                 String labourId = labour.getLabour().getId();
                 // Guardar tareas en la labor
                 playerConfig.set("labours." + uuid.toString() + ".id", labourId);
-                for(Map.Entry<PlayerLabourTask, Integer> task : labour.getPlayerTasks().entrySet()) {
-                    PlayerLabourTask labourTask = task.getKey();
-                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".progress", task.getValue());
-                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".max", labourTask.getMax());
-                    playerConfig.set("labours." + uuid.toString() + ".tasks." + labourTask.getTask().getId() + ".completed", labourTask.isCompleted());
+                for(PlayerLabourTask task : labour.getPlayerTasks()) {
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + task.getTask().getId() + ".progress", task.getProgress());
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + task.getTask().getId() + ".max", task.getMax());
+                    playerConfig.set("labours." + uuid.toString() + ".tasks." + task.getTask().getId() + ".completed", task.isCompleted());
                 }
             });
 
@@ -86,17 +85,18 @@ public class Utilities {
             }
 
             Set<String> configTasks = playerConfig.getConfigurationSection("labours." + uuid + ".tasks").getKeys(false);
-            HashMap<PlayerLabourTask, Integer> tasks = new HashMap<>();
+            List<PlayerLabourTask> tasks = new ArrayList<>();
             for(String configTask : configTasks) {
                 Task task = labour.getTasks().get(configTask);
                 int max = playerConfig.getInt("labours." + uuid + ".tasks." + configTask + ".max");
                 int progress = playerConfig.getInt("labours." + uuid + ".tasks." + configTask + ".progress");
                 boolean completed = playerConfig.getBoolean("labours." + uuid + ".tasks." + configTask + ".completed");
                 PlayerLabourTask labourTask = new PlayerLabourTask(task, max);
+                labourTask.setProgress(progress);
                 if(completed) {
                     labourTask.complete();
                 }
-                tasks.put(labourTask, progress);
+                tasks.add(labourTask);
             }
             PlayerLabour playerLabour = new PlayerLabour(UUID.fromString(uuid), labour, tasks);
             labours.put(UUID.fromString(uuid), playerLabour);
@@ -106,9 +106,9 @@ public class Utilities {
     }
 
     public PlayerLabour createPlayerLabour(Labour labour) {
-        HashMap<PlayerLabourTask, Integer> tasks = new HashMap<>();
+        List<PlayerLabourTask> tasks = new ArrayList<>();
         for(Task task : getTasks(labour)) {
-            tasks.put(new PlayerLabourTask(task, task.getAmount()), 0);
+            tasks.add(new PlayerLabourTask(task, task.getAmount()));
         }
 
         return new PlayerLabour(labour, tasks);
@@ -150,8 +150,8 @@ public class Utilities {
     }
 
     public boolean updateProgress(PlayerLabour labour, Player player, PlayerLabourTask task, int amount) {
-        int newProgress = labour.getPlayerTasks().get(task) + amount;
-        labour.getPlayerTasks().put(task, newProgress);
+        int newProgress = task.getProgress() + amount;
+        task.setProgress(newProgress);
         // Se completa la tarea
         if(newProgress >= task.getMax()) {
             task.complete();
@@ -188,7 +188,7 @@ public class Utilities {
 
     public boolean applyCrystal(PlayerLabour labour, Player player) {
         boolean completed = false;
-        for(PlayerLabourTask task : labour.getPlayerTasks().keySet()) {
+        for(PlayerLabourTask task : labour.getPlayerTasks()) {
             if(!task.isCompleted()) {
                 task.complete();
                 break;
@@ -316,6 +316,26 @@ public class Utilities {
         }
 
         return amount;
+    }
+
+    public List<PlayerLabourTask> getGroupedTasks(Player player) {
+        HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
+        List<PlayerLabourTask> groupedTasks = new ArrayList<>();
+        for(PlayerLabour labour : labours.values()) {
+            for(PlayerLabourTask task : labour.getUnfinishedTasks()) {
+                if(groupedTasks.contains(task)) {
+                    PlayerLabourTask containedTask = groupedTasks.get(groupedTasks.indexOf(task));
+                    containedTask.setMax(containedTask.getMax() + task.getMax());
+                    containedTask.setProgress(containedTask.getProgress() + task.getProgress());
+                } else {
+                    PlayerLabourTask newTask = new PlayerLabourTask(task.getTask(), task.getMax());
+                    newTask.setProgress(task.getProgress());
+                    groupedTasks.add(newTask);
+                }
+            }
+        }
+
+        return groupedTasks;
     }
 
     private int getMaxFitInInventory(ItemStack item, Inventory inventory) {

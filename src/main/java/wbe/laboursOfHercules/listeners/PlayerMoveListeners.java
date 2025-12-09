@@ -39,14 +39,14 @@ public class PlayerMoveListeners implements Listener {
 
         Collection<PlayerLabour> labours = new ArrayList<>(playerLabours.values());
         for(PlayerLabour playerLabour : labours) {
-            for(Map.Entry<PlayerLabourTask, Integer> labourTask : playerLabour.getPlayerTasks().entrySet()) {
-                Task task = labourTask.getKey().getTask();
-                if(labourTask.getKey().isCompleted()) {
+            for(PlayerLabourTask labourTask : playerLabour.getPlayerTasks()) {
+                Task task = labourTask.getTask();
+                if(labourTask.isCompleted()) {
                     continue;
                 }
 
                 if(task instanceof MoveTask) {
-                    utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress);
+                    utilities.updateProgress(playerLabour, player, labourTask, progress);
 
                     if(!LaboursOfHercules.config.updateAllLabours) {
                         return;
@@ -54,7 +54,7 @@ public class PlayerMoveListeners implements Listener {
                         break;
                     }
                 } else if(task instanceof SwimTask && player.isSwimming()) {
-                    utilities.updateProgress(playerLabour, player, labourTask.getKey(), progress);
+                    utilities.updateProgress(playerLabour, player, labourTask, progress);
 
                     if(!LaboursOfHercules.config.updateAllLabours) {
                         return;

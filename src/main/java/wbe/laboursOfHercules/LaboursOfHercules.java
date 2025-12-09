@@ -15,7 +15,6 @@ import wbe.laboursOfHercules.util.Utilities;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
 public final class LaboursOfHercules extends JavaPlugin {

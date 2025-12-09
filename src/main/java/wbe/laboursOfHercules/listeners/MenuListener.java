@@ -17,15 +17,19 @@ import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.events.CrystalUseEvent;
 import wbe.laboursOfHercules.items.LabourItem;
+import wbe.laboursOfHercules.items.SummaryItem;
 import wbe.laboursOfHercules.labours.PlayerLabour;
+import wbe.laboursOfHercules.labours.PlayerLabourTask;
 import wbe.laboursOfHercules.util.Utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class MenuListener implements Listener {
 
-    private Utilities utilities = new Utilities();
+    private static Utilities utilities = new Utilities();
 
     private static void fillBorders(Inventory inventory, int page) {
         ItemStack borde = new ItemStack(LaboursOfHercules.config.menuBorder);
@@ -106,6 +110,9 @@ public class MenuListener implements Listener {
                 .replace("%total%", String.valueOf(LaboursOfHercules.config.maxLaboursPerPlayer)));
         fillBorders(inventory, page);
         fillLabours(inventory, page, playerLabours);
+
+        List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+        inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, 1));
         if(necesaryPages > page) {
             ItemStack nextPage = new ItemStack(Material.ARROW);
             ItemMeta nextPageMeta = nextPage.getItemMeta();
@@ -135,6 +142,7 @@ public class MenuListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack bordeItem = event.getInventory().getItem(0);
+        Inventory inventory = event.getInventory();
         if(bordeItem == null) {
             return;
         }
@@ -167,6 +175,21 @@ public class MenuListener implements Listener {
             } catch(Exception e) {
                 player.sendMessage(LaboursOfHercules.messages.pageNotFound);
             }
+        }
+
+        NamespacedKey summaryKey = new NamespacedKey(LaboursOfHercules.getInstance(), "summaryPage");
+        if(event.getClick().equals(ClickType.LEFT) && meta.getPersistentDataContainer().has(summaryKey)) {
+            int page = meta.getPersistentDataContainer().get(summaryKey, PersistentDataType.INTEGER) + 1;
+            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+            inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, page));
+            event.setCancelled(true);
+            return;
+        } else if(event.getClick().equals(ClickType.RIGHT) && meta.getPersistentDataContainer().has(summaryKey)) {
+            int page = meta.getPersistentDataContainer().get(summaryKey, PersistentDataType.INTEGER) - 1;
+            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+            inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, page));
+            event.setCancelled(true);
+            return;
         }
 
         NamespacedKey labourKey = new NamespacedKey(LaboursOfHercules.getInstance(), "labour");

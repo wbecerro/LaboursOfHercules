@@ -36,7 +36,17 @@ Menu:
   title: "&8Labores &8(%active%/&4%total%&8)"
   borderMaterial: GRAY_STAINED_GLASS_PANE
   removeText: "&eClic derecho para eliminar permanentemente"
-
+  summarySlot: 4
+  summaryMaxTasksPerPage: 15
+  summaryItem:
+    material: GUSTER_BANNER_PATTERN
+    name: "&b&lResumen de misiones &e(&a%current%&e/&c%max%&e)"
+    lore:
+      - ''
+      - '&a&l➤ TAREAS &a(&d%length%&a):'
+    nextPage: "&7Clic izquierdo para pasar a la página siguiente."
+    previousPage: "&7Clic derecho para regresar a la página anterior."
+    glow: true
 Items:
   randomLabour:
     material: PAPER

@@ -32,6 +32,22 @@ public class Config {
 
     public String removeText;
 
+    public int summarySlot;
+
+    public int summaryMaxTasksPerPage;
+
+    public Material summaryItemMaterial;
+
+    public String summaryItemName;
+
+    public List<String> summaryItemLore;
+
+    public String summaryItemNextPage;
+
+    public String summaryItemPreviousPage;
+
+    public boolean summaryItemGlow;
+
     public Material randomLabourMaterial;
 
     public String randomLabourName;
@@ -65,6 +81,14 @@ public class Config {
         menuTitle = config.getString("Menu.title").replace("&", "§");
         menuBorder = Material.valueOf(config.getString("Menu.borderMaterial"));
         removeText = config.getString("Menu.removeText").replace("&", "§");
+        summarySlot = config.getInt("Menu.summarySlot");
+        summaryMaxTasksPerPage = config.getInt("Menu.summaryMaxTasksPerPage");
+        summaryItemMaterial = Material.valueOf(config.getString("Menu.summaryItem.material"));
+        summaryItemName = config.getString("Menu.summaryItem.name").replace("&", "§");
+        summaryItemNextPage = config.getString("Menu.summaryItem.nextPage").replace("&", "§");
+        summaryItemPreviousPage = config.getString("Menu.summaryItem.previousPage").replace("&", "§");
+        summaryItemLore = config.getStringList("Menu.summaryItem.lore");
+        summaryItemGlow = config.getBoolean("Menu.summaryItem.glow");
 
         randomLabourMaterial = Material.valueOf(config.getString("Items.randomLabour.material"));
         randomLabourName = config.getString("Items.randomLabour.name").replace("&", "§");

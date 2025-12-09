@@ -36,10 +36,11 @@ public class CraftItemListeners implements Listener {
         }
 
         Collection<PlayerLabour> labours = new ArrayList<>(playerLabours.values());
+        int amount = utilities.getCraftedAmount(event);
         for(PlayerLabour playerLabour : labours) {
-            for(Map.Entry<PlayerLabourTask, Integer> labourTask : playerLabour.getPlayerTasks().entrySet()) {
-                Task task = labourTask.getKey().getTask();
-                if(labourTask.getKey().isCompleted()) {
+            for(PlayerLabourTask labourTask : playerLabour.getPlayerTasks()) {
+                Task task = labourTask.getTask();
+                if(labourTask.isCompleted()) {
                     continue;
                 }
 
@@ -51,13 +52,20 @@ public class CraftItemListeners implements Listener {
                     continue;
                 }
 
-                int amount = utilities.getCraftedAmount(event);
-                utilities.updateProgress(playerLabour, player, labourTask.getKey(), amount);
-
-                if(!LaboursOfHercules.config.updateAllLabours) {
-                    return;
-                } else {
+                int remaining = labourTask.getMax() - labourTask.getProgress();
+                int extra = amount - remaining;
+                if(LaboursOfHercules.config.updateAllLabours) {
+                    utilities.updateProgress(playerLabour, player, labourTask, amount);
                     break;
+                }
+
+                if(extra > 0) {
+                    utilities.updateProgress(playerLabour, player, labourTask, amount);
+                    amount -= remaining;
+                    break;
+                } else {
+                    utilities.updateProgress(playerLabour, player, labourTask, amount);
+                    return;
                 }
             }
         }

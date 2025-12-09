@@ -1,6 +1,6 @@
 package wbe.laboursOfHercules.labours;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerLabour {
@@ -9,14 +9,14 @@ public class PlayerLabour {
 
     private Labour labour;
 
-    private HashMap<PlayerLabourTask, Integer> playerTasks;
+    private List<PlayerLabourTask> playerTasks;
 
-    public PlayerLabour(Labour labour, HashMap<PlayerLabourTask, Integer> playerTasks) {
+    public PlayerLabour(Labour labour, List<PlayerLabourTask> playerTasks) {
         this.labour = labour;
         this.playerTasks = playerTasks;
     }
 
-    public PlayerLabour(UUID uuid, Labour labour, HashMap<PlayerLabourTask, Integer> playerTasks) {
+    public PlayerLabour(UUID uuid, Labour labour, List<PlayerLabourTask> playerTasks) {
         this.uuid = uuid;
         this.labour = labour;
         this.playerTasks = playerTasks;
@@ -34,16 +34,20 @@ public class PlayerLabour {
         this.labour = labour;
     }
 
-    public HashMap<PlayerLabourTask, Integer> getPlayerTasks() {
+    public List<PlayerLabourTask> getPlayerTasks() {
         return playerTasks;
     }
 
-    public void setPlayerTasks(HashMap<PlayerLabourTask, Integer> playerTasks) {
+    public List<PlayerLabourTask> getUnfinishedTasks() {
+        return playerTasks.stream().filter(task -> !task.isCompleted()).toList();
+    }
+
+    public void setPlayerTasks(List<PlayerLabourTask> playerTasks) {
         this.playerTasks = playerTasks;
     }
 
     public boolean areTasksCompleted() {
-        for(PlayerLabourTask task : playerTasks.keySet()) {
+        for(PlayerLabourTask task : playerTasks) {
             if(!task.isCompleted()) {
                 return false;
             }
