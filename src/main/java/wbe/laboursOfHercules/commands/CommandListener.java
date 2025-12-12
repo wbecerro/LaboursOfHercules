@@ -64,6 +64,12 @@ public class CommandListener implements CommandExecutor {
                     sender.sendMessage(LaboursOfHercules.messages.typeNotFound.replace("%type%", type));
                     return false;
                 }
+
+                if(LaboursOfHercules.activePlayers.get(player).size() >= LaboursOfHercules.config.maxLaboursPerPlayer) {
+                    sender.sendMessage(LaboursOfHercules.messages.maxLaboursReached);
+                    return false;
+                }
+
                 for(int i=0;i<amount;i++) {
                     PlayerLabour playerLabour = utilities.createPlayerLabour(labour);
                     HashMap<UUID, PlayerLabour> playerLabours = LaboursOfHercules.activePlayers.get(player);
