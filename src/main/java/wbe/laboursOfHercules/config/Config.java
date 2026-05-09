@@ -222,6 +222,10 @@ public class Config {
                 return new MoveTask(id, minAmount, maxAmount, name, lore);
             case "SWIM":
                 return new SwimTask(id, minAmount, maxAmount, name, lore);
+            case "FOOD":
+                return new FoodTask(id, minAmount, maxAmount, name, lore);
+            case "RUNE":
+                return new RuneTask(id, minAmount, maxAmount, name, lore);
         }
 
         return new BreakTask("error", 1, 1, "ERROR", "ERROR", new ArrayList<>(Arrays.asList(Material.STONE)));

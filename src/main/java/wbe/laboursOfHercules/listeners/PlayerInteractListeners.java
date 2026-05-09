@@ -17,7 +17,6 @@ import wbe.laboursOfHercules.labours.PlayerLabour;
 import wbe.laboursOfHercules.util.Utilities;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
 public class PlayerInteractListeners implements Listener {

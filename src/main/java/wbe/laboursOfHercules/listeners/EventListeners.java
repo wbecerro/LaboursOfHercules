@@ -41,5 +41,13 @@ public class EventListeners {
         if(Bukkit.getPluginManager().getPlugin("TartarusRiches") != null) {
             pluginManager.registerEvents(new PlayerReceiveGemListeners(), plugin);
         }
+
+        if(Bukkit.getPluginManager().getPlugin("DemetersTeachings") != null) {
+            pluginManager.registerEvents(new PlayerReceiveFoodListeners(), plugin);
+        }
+
+        if(Bukkit.getPluginManager().getPlugin("GaiasFindings") != null) {
+            pluginManager.registerEvents(new PlayerReceiveRuneListeners(), plugin);
+        }
     }
 }
