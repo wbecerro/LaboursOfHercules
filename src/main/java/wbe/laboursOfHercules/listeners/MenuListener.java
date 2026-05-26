@@ -232,6 +232,12 @@ public class MenuListener implements Listener {
 
             UUID uuid = UUID.fromString(inventoryMeta.getPersistentDataContainer().get(uuidKey, PersistentDataType.STRING));
             PlayerLabour playerLabour = LaboursOfHercules.activePlayers.get(player).get(uuid);
+            if(playerLabour == null) {
+                event.setCancelled(true);
+                player.closeInventory();
+                return;
+            }
+
             // Comprobación de si es el mismo tipo
             if(!crystalType.equalsIgnoreCase(playerLabour.getLabour().getId())) {
                 event.setCancelled(true);
@@ -246,6 +252,7 @@ public class MenuListener implements Listener {
                     openMenu(player, currentPage);
                 } catch(Exception e) {
                     player.sendMessage(LaboursOfHercules.messages.pageNotFound);
+                    return;
                 }
             } else {
                 event.setCurrentItem(new LabourItem(playerLabour));
