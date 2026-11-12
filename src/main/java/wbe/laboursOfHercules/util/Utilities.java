@@ -10,7 +10,6 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import wbe.laboursOfHercules.LaboursOfHercules;
 import wbe.laboursOfHercules.events.CompleteLabourEvent;
 import wbe.laboursOfHercules.events.CompleteTaskEvent;
@@ -318,10 +317,16 @@ public class Utilities {
         return amount;
     }
 
-    public List<PlayerLabourTask> getGroupedTasks(Player player) {
+    public List<PlayerLabourTask> getGroupedTasks(Player player, String filter) {
         HashMap<UUID, PlayerLabour> labours = LaboursOfHercules.activePlayers.get(player);
         List<PlayerLabourTask> groupedTasks = new ArrayList<>();
         for(PlayerLabour labour : labours.values()) {
+            if(filter != null && !filter.isBlank()) {
+                if(!labour.getLabour().getId().equalsIgnoreCase(filter)) {
+                    continue;
+                }
+            }
+
             for(PlayerLabourTask task : labour.getUnfinishedTasks()) {
                 if(groupedTasks.contains(task)) {
                     PlayerLabourTask containedTask = groupedTasks.get(groupedTasks.indexOf(task));
@@ -336,6 +341,21 @@ public class Utilities {
         }
 
         return groupedTasks;
+    }
+
+    public List<PlayerLabour> getFilteredPlayerLabours(Player player, String filter) {
+        if(filter == null || filter.isBlank()) {
+            return new ArrayList<>(LaboursOfHercules.activePlayers.get(player).values());
+        }
+
+        List<PlayerLabour> filteredLabours = new ArrayList<>();
+        LaboursOfHercules.activePlayers.get(player).values().forEach(labour -> {
+            if(labour.getLabour().getId().equalsIgnoreCase(filter)) {
+                filteredLabours.add(labour);
+            }
+        });
+
+        return filteredLabours;
     }
 
     private int getMaxFitInInventory(ItemStack item, Inventory inventory) {

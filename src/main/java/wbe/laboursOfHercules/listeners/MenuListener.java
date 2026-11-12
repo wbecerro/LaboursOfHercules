@@ -22,8 +22,6 @@ import wbe.laboursOfHercules.labours.PlayerLabour;
 import wbe.laboursOfHercules.labours.PlayerLabourTask;
 import wbe.laboursOfHercules.util.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +29,14 @@ public class MenuListener implements Listener {
 
     private static Utilities utilities = new Utilities();
 
-    private static void fillBorders(Inventory inventory, int page) {
+    private static void fillBorders(Inventory inventory, int page, String type) {
         ItemStack borde = new ItemStack(LaboursOfHercules.config.menuBorder);
         ItemMeta bordeMeta = borde.getItemMeta();
         NamespacedKey currentPage = new NamespacedKey(LaboursOfHercules.getInstance(), "currentPage");
+        NamespacedKey filterKey = new NamespacedKey(LaboursOfHercules.getInstance(), "filter");
         bordeMeta.setDisplayName(" ");
         bordeMeta.getPersistentDataContainer().set(currentPage, PersistentDataType.INTEGER, page);
+        bordeMeta.getPersistentDataContainer().set(filterKey, PersistentDataType.STRING, type);
         borde.setItemMeta(bordeMeta);
 
         for(int i = 0; i < inventory.getSize(); i++) {
@@ -59,7 +59,7 @@ public class MenuListener implements Listener {
         }
     }
 
-    public static void fillLabours(Inventory inventory, int page, ArrayList<PlayerLabour> labours) {
+    public static void fillLabours(Inventory inventory, int page, List<PlayerLabour> labours) {
         int maxTalismanToShow = 28*page;
         int talismanIndex = 28*(page-1);
         if(28*page > labours.size()) {
@@ -93,8 +93,8 @@ public class MenuListener implements Listener {
         }
     }
 
-    public static void openMenu(Player player, int page) throws Exception {
-        ArrayList<PlayerLabour> playerLabours = new ArrayList<>(LaboursOfHercules.activePlayers.get(player).values());
+    public static void openMenu(Player player, int page, String type) throws Exception {
+        List<PlayerLabour> playerLabours = utilities.getFilteredPlayerLabours(player, type);
         if(playerLabours.size() == 0) {
             throw new Exception(LaboursOfHercules.messages.noTalismansFound);
         }
@@ -108,10 +108,10 @@ public class MenuListener implements Listener {
         Inventory inventory = Bukkit.createInventory(null, 54, LaboursOfHercules.config.menuTitle
                 .replace("%active%", String.valueOf(playerLabours.size()))
                 .replace("%total%", String.valueOf(LaboursOfHercules.config.maxLaboursPerPlayer)));
-        fillBorders(inventory, page);
+        fillBorders(inventory, page, type);
         fillLabours(inventory, page, playerLabours);
 
-        List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+        List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player, type);
         inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, 1));
         if(necesaryPages > page) {
             ItemStack nextPage = new ItemStack(Material.ARROW);
@@ -147,6 +147,7 @@ public class MenuListener implements Listener {
             return;
         }
         NamespacedKey currentPageKey = new NamespacedKey(LaboursOfHercules.getInstance(), "currentPage");
+        NamespacedKey filterKey = new NamespacedKey(LaboursOfHercules.getInstance(), "filter");
 
         if(!bordeItem.getItemMeta().getPersistentDataContainer().has(currentPageKey)) {
             return;
@@ -168,10 +169,11 @@ public class MenuListener implements Listener {
 
         // Clic en flecha de cambio de página
         ItemMeta meta = item.getItemMeta();
+        String type = bordeItem.getItemMeta().getPersistentDataContainer().get(filterKey, PersistentDataType.STRING);
         if(meta.getPersistentDataContainer().has(goToPage)) {
             int page = meta.getPersistentDataContainer().get(goToPage, PersistentDataType.INTEGER);
             try {
-                openMenu(player, page);
+                openMenu(player, page, type);
             } catch(Exception e) {
                 player.sendMessage(LaboursOfHercules.messages.pageNotFound);
             }
@@ -180,13 +182,13 @@ public class MenuListener implements Listener {
         NamespacedKey summaryKey = new NamespacedKey(LaboursOfHercules.getInstance(), "summaryPage");
         if(event.getClick().equals(ClickType.LEFT) && meta.getPersistentDataContainer().has(summaryKey)) {
             int page = meta.getPersistentDataContainer().get(summaryKey, PersistentDataType.INTEGER) + 1;
-            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player, type);
             inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, page));
             event.setCancelled(true);
             return;
         } else if(event.getClick().equals(ClickType.RIGHT) && meta.getPersistentDataContainer().has(summaryKey)) {
             int page = meta.getPersistentDataContainer().get(summaryKey, PersistentDataType.INTEGER) - 1;
-            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player);
+            List<PlayerLabourTask> tasks = utilities.getGroupedTasks(player, type);
             inventory.setItem(LaboursOfHercules.config.summarySlot, new SummaryItem(tasks, page));
             event.setCancelled(true);
             return;
@@ -198,7 +200,7 @@ public class MenuListener implements Listener {
             utilities.removeLabour(player, uuid);
             event.setCancelled(true);
             try {
-                openMenu(player, currentPage);
+                openMenu(player, currentPage, type);
             } catch(Exception ex) {
                 player.closeInventory();
             }
@@ -249,7 +251,7 @@ public class MenuListener implements Listener {
             boolean finished = utilities.applyCrystal(playerLabour, player);
             if(finished) {
                 try {
-                    openMenu(player, currentPage);
+                    openMenu(player, currentPage, type);
                 } catch(Exception e) {
                     player.sendMessage(LaboursOfHercules.messages.pageNotFound);
                     return;

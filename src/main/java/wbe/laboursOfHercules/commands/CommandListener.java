@@ -148,8 +148,18 @@ public class CommandListener implements CommandExecutor {
                     return false;
                 }
 
+                String type = "";
+                if(args.length > 1) {
+                    type = args[1];
+                    Labour labour = LaboursOfHercules.config.labours.get(type);
+                    if(labour == null) {
+                        sender.sendMessage(LaboursOfHercules.messages.typeNotFound.replace("%type%", type));
+                        return false;
+                    }
+                }
+
                 try {
-                    MenuListener.openMenu(player, 1);
+                    MenuListener.openMenu(player, 1, type);
                 } catch(Exception e) {
                     sender.sendMessage(e.getMessage());
                 }

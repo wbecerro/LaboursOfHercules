@@ -33,6 +33,7 @@ public class TabListener implements TabCompleter {
         // Argumento 1
         if(args.length == 2) {
             switch(args[0].toLowerCase()) {
+                case "list":
                 case "labour":
                     List<String> labours = new ArrayList<>();
                     LaboursOfHercules.config.labours.entrySet().forEach((entry -> {
